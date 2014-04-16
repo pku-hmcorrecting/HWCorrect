@@ -56,6 +56,7 @@ public class DrawActivity extends Activity {
 	    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
 	        //WindowManager.LayoutParams.FLAG_FULLSCREEN);  
 	    // 显示自定义的游戏View  
+	    //fuck u
 	    getActionBar().setDisplayHomeAsUpEnabled(true);
 	    mAnimView = new MyView(this);  
 	    setContentView(mAnimView);

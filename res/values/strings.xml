@@ -42,5 +42,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_draw2">Draw2</string>
     <string name="title_activity_draw3">Draw3</string>
+    <string name="title_activity_home_work_list">HomeWorkListActivity</string>
+    <string name="title_activity_hwlist">HWListActivity</string>
 
 </resources>

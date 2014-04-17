@@ -50,10 +50,10 @@
         <activity
             android:name="com.example.android.navigationdrawerexample.DrawActivity"
             android:label="@string/title_activity_draw"
-            android:parentActivityName="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" >
+            android:parentActivityName="com.example.android.navigationdrawerexample.HWListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" />
+                android:value="com.example.android.navigationdrawerexample.HWListActivity" />
         </activity>
         <activity
             android:name="com.example.android.navigationdrawerexample.DrawFullScreen"
@@ -76,6 +76,22 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" />
+        </activity>
+        <activity
+            android:name="com.example.android.navigationdrawerexample.HomeWorkListActivity"
+            android:label="@string/title_activity_home_work_list"
+            android:parentActivityName="com.example.android.navigationdrawerexample.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.navigationdrawerexample.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.android.navigationdrawerexample.HWListActivity"
+            android:label="@string/title_activity_hwlist"
+            android:parentActivityName="com.example.android.navigationdrawerexample.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.navigationdrawerexample.MainActivity" />
         </activity>
     </application>
 

@@ -50,23 +50,26 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int venus=0x7f02000b;
     }
     public static final class id {
-        public static final int CommentDefault=0x7f0a0008;
-        public static final int ItemImage=0x7f0a000c;
-        public static final int ItemText=0x7f0a000e;
-        public static final int ItemTitle=0x7f0a000d;
-        public static final int ListView01=0x7f0a0005;
-        public static final int RelativeLayout01=0x7f0a000b;
-        public static final int StatisticDefault=0x7f0a000a;
-        public static final int action_settings=0x7f0a000f;
-        public static final int action_websearch=0x7f0a0010;
+        public static final int CertainHWList=0x7f0a0005;
+        public static final int CertainHWsItemTitle=0x7f0a000b;
+        public static final int CommentDefault=0x7f0a000c;
+        public static final int ItemText=0x7f0a0011;
+        public static final int ItemTitle=0x7f0a0010;
+        public static final int ListView01=0x7f0a0007;
+        public static final int RelativeLayout01=0x7f0a000f;
+        public static final int RelativeLayout02=0x7f0a000a;
+        public static final int StatisticDefault=0x7f0a000e;
+        public static final int action_settings=0x7f0a0012;
+        public static final int action_websearch=0x7f0a0013;
         public static final int container=0x7f0a0000;
-        public static final int content_frame=0x7f0a0006;
-        public static final int drawer_layout=0x7f0a0004;
-        public static final int dummy_button=0x7f0a0003;
-        public static final int fullscreen_content=0x7f0a0001;
-        public static final int fullscreen_content_controls=0x7f0a0002;
-        public static final int image=0x7f0a0009;
-        public static final int left_drawer=0x7f0a0007;
+        public static final int content_frame=0x7f0a0008;
+        public static final int drawer_layout=0x7f0a0006;
+        public static final int dummy_button=0x7f0a0004;
+        public static final int fullscreen_content=0x7f0a0002;
+        public static final int fullscreen_content_controls=0x7f0a0003;
+        public static final int image=0x7f0a000d;
+        public static final int left_drawer=0x7f0a0009;
+        public static final int view3d=0x7f0a0001;
     }
     public static final class layout {
         public static final int activity_display_homeworks=0x7f030000;
@@ -74,24 +77,31 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_draw2=0x7f030002;
         public static final int activity_draw3=0x7f030003;
         public static final int activity_draw_full_screen=0x7f030004;
-        public static final int activity_main=0x7f030005;
-        public static final int drawer_list_item=0x7f030006;
-        public static final int fragment_comments=0x7f030007;
-        public static final int fragment_display_homeworks=0x7f030008;
-        public static final int fragment_draw=0x7f030009;
-        public static final int fragment_draw3=0x7f03000a;
-        public static final int fragment_homeworklistlist=0x7f03000b;
-        public static final int fragment_homeworks=0x7f03000c;
-        public static final int fragment_planet=0x7f03000d;
-        public static final int fragment_statistcs=0x7f03000e;
-        public static final int list_view=0x7f03000f;
+        public static final int activity_home_work_list=0x7f030005;
+        public static final int activity_hwlist=0x7f030006;
+        public static final int activity_main=0x7f030007;
+        public static final int certain_hwlist_item=0x7f030008;
+        public static final int drawer_list_item=0x7f030009;
+        public static final int fragment_comments=0x7f03000a;
+        public static final int fragment_display_homeworks=0x7f03000b;
+        public static final int fragment_draw=0x7f03000c;
+        public static final int fragment_draw3=0x7f03000d;
+        public static final int fragment_home_work_list=0x7f03000e;
+        public static final int fragment_homeworklistlist=0x7f03000f;
+        public static final int fragment_homeworks=0x7f030010;
+        public static final int fragment_hwlist=0x7f030011;
+        public static final int fragment_planet=0x7f030012;
+        public static final int fragment_statistcs=0x7f030013;
+        public static final int list_view=0x7f030014;
     }
     public static final class menu {
         public static final int display_homeworks=0x7f090000;
         public static final int draw=0x7f090001;
         public static final int draw2=0x7f090002;
         public static final int draw3=0x7f090003;
-        public static final int main=0x7f090004;
+        public static final int home_work_list=0x7f090004;
+        public static final int hwlist=0x7f090005;
+        public static final int main=0x7f090006;
     }
     public static final class string {
         public static final int action_settings=0x7f06000b;
@@ -112,6 +122,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int title_activity_draw2=0x7f060010;
         public static final int title_activity_draw3=0x7f060011;
         public static final int title_activity_draw_full_screen=0x7f06000d;
+        public static final int title_activity_home_work_list=0x7f060012;
+        public static final int title_activity_hwlist=0x7f060013;
     }
     public static final class style {
         /**  Backward-compatible version of ?android:attr/buttonBarStyle 

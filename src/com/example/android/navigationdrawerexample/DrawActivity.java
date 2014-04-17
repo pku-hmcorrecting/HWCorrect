@@ -1,83 +1,87 @@
 package com.example.android.navigationdrawerexample;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import com.example.android.navigationdrawerexample.DisplayHomeworksActivity.PlaceholderFragment;
-
-import android.app.Activity;  
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.Context;  
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;  
-import android.graphics.Color;  
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;  
-import android.graphics.Path;  
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;  
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;  
 import android.view.SubMenu;
-import android.view.SurfaceHolder;  
-import android.view.SurfaceView;  
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;  
-import android.view.WindowManager;  
-import android.view.SurfaceHolder.Callback;  
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
  
- 
-public class DrawActivity extends Activity {  
- 
-    static MyView mAnimView = null;  
+public class DrawActivity extends Activity implements OnClickListener {  
+    
+    Button option = null;
+    HomeworkFileManager hwFileManager;
+    private int teacherId;
+	private int courseId;
+	private int year;
+	private int month;
+	private int day;
+	private int studentId;
  
     @Override  
     public void onCreate(Bundle savedInstanceState) {  
-	    super.onCreate(savedInstanceState);  
-	    // È«ÆÁÏÔÊ¾´°¿Ú  
-	    //requestWindowFeature(Window.FEATURE_NO_TITLE);  
-	    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
-	        //WindowManager.LayoutParams.FLAG_FULLSCREEN);  
-	    // ÏÔÊ¾×Ô¶¨ÒåµÄÓÎÏ·View  
-	    //fuck u
-	    getActionBar().setDisplayHomeAsUpEnabled(true);
-	    mAnimView = new MyView(this);  
-	    setContentView(mAnimView);
+        super.onCreate(savedInstanceState);   
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);  
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
+            //WindowManager.LayoutParams.FLAG_FULLSCREEN);  
+        setContentView(R.layout.activity_draw);
+        MyView.mainactivity = this;
+        MyView.curPageNo = 1;
+        Intent intent = this.getIntent();
+	    teacherId = intent.getIntExtra("teacherId", 1);
+	    courseId = intent.getIntExtra("courseId", 1);
+	    year = intent.getIntExtra("year", 2014);
+	    month = intent.getIntExtra("month", 4);
+	    day = intent.getIntExtra("day", 16);
+	    studentId = intent.getIntExtra("studentId", 1100012844);
+		try {
+			hwFileManager = new HomeworkFileManager(this, teacherId, courseId, year, month, day, studentId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        //option = (Button)findViewById(R.id.button);
+        //option.setOnClickListener(this);
     }
+
     /**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
+     * A placeholder fragment containing a simple view.
+     */
+    /*public static class PlaceholderFragment extends Fragment {
 
-		public PlaceholderFragment() {
-		}
+        public PlaceholderFragment() {
+        }
 
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_draw,
-					container, false);
-			return rootView;
-		}
-	}
-
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_draw,
+                    container, false);
+            return rootView;
+        }
+    }*/
+     
+    @Override  
+    public void onClick(View v) {  
+        if (v == option) {  
+        	openOptionsMenu();
+        } 
+    }
+    /*
     @Override  
     public boolean onKeyDown(int keyCode, KeyEvent event)  
     {  
@@ -92,39 +96,45 @@ public class DrawActivity extends Activity {
             return super.onKeyDown(keyCode, event);  
         }         
     } 
-    
+    */
     @Override  
     public boolean onCreateOptionsMenu(Menu menu) {  
-     // TODO Auto-generated method stub
-    	menu.add(0, 0, 0, "³·Ïú");
-    	menu.add(0, 2, 2, "»Ö¸´");
-        menu.add(0, 4, 4, "Çå¿Õ");  
-        menu.add(0, 6, 6, "±£´æ");
-        SubMenu graphcolor = menu.addSubMenu(0, 8, 8, "¸ü¸ÄÍ¼°¸ÑÕÉ«..");
-        SubMenu bgcolor = menu.addSubMenu(0, 9, 9, "¸ü¸Ä±³¾°ÑÕÉ«..");
-        menu.add(0, 10, 10, "Ñ¡Ôñ±³¾°Í¼Æ¬..");
-        menu.add(0, 12, 12, "ÅÄÕÕÈ¡±³¾°..");
-        ///////////////////////////////
-        menu.add(0, 44, 44, "ÏÂÒ»Ò³");
-        menu.add(0, 46, 46, "ÉÏÒ»Ò³");
-        ////////////////////////////////
-        graphcolor.add(1, 15, 15, "ºÚÉ«");
-        graphcolor.add(1, 16, 16, "°×É«");
-        graphcolor.add(1, 17, 17, "ºìÉ«");
-        graphcolor.add(1, 18, 18, "À¶É«");
-        graphcolor.add(1, 19, 19, "ÂÌÉ«");
-        graphcolor.add(1, 20, 20, "×ÏÉ«");
-        graphcolor.add(1, 21, 21, "»ÆÉ«");
-        graphcolor.add(1, 22, 22, "»ÒÉ«");
-        bgcolor.add(2, 34, 34, "ºÚÉ«");
-        bgcolor.add(2, 35, 35, "°×É«");
-        bgcolor.add(2, 36, 36, "ºìÉ«");
-        bgcolor.add(2, 37, 37, "À¶É«");
-        bgcolor.add(2, 38, 38, "ÂÌÉ«");
-        bgcolor.add(2, 39, 39, "×ÏÉ«");
-        bgcolor.add(2, 40, 40, "»ÆÉ«");
-        bgcolor.add(2, 41, 41, "»ÒÉ«");
+    	  // TODO Auto-generated method stub
+    	menu.add(0, 0, 0, "æ’¤é”€");
+    	menu.add(0, 2, 2, "æ¢å¤");
+        menu.add(0, 4, 4, "æ¸…ç©º");  
+        menu.add(0, 6, 6, "ä¿å­˜");
+        SubMenu size = menu.addSubMenu(0, 7, 7, "æ›´æ”¹å›¾æ¡ˆç²—ç»†..");
+        SubMenu graphcolor = menu.addSubMenu(0, 8, 8, "æ›´æ”¹å›¾æ¡ˆé¢œè‰²..");
+       // SubMenu bgcolor = menu.addSubMenu(0, 9, 9, "æ›´æ”¹èƒŒæ™¯é¢œè‰²..");
+        menu.add(0, 10, 10, "é€‰æ‹©èƒŒæ™¯å›¾ç‰‡..");
+        menu.add(0, 12, 12, "æ‹ç…§å–èƒŒæ™¯..");
+        graphcolor.add(1, 15, 15, "é»‘è‰²");
+        graphcolor.add(1, 16, 16, "ç™½è‰²");
+        graphcolor.add(1, 17, 17, "çº¢è‰²");
+        graphcolor.add(1, 18, 18, "è“è‰²");
+        graphcolor.add(1, 19, 19, "ç»¿è‰²");
+        graphcolor.add(1, 20, 20, "ç´«è‰²");
+        graphcolor.add(1, 21, 21, "é»„è‰²");
+        graphcolor.add(1, 22, 22, "ç°è‰²");
+        size.add(3, 24, 24, "å¾ˆç»†");
+        size.add(3, 25, 25, "æ¯”è¾ƒç»†");
+        size.add(3, 26, 26, "ä¸­ç­‰");
+        size.add(3, 27, 27, "æ¯”è¾ƒç²—");
+        size.add(3, 28, 28, "å¾ˆç²—");
+        /*bgcolor.add(2, 34, 34, "é»‘è‰²");
+        bgcolor.add(2, 35, 35, "ç™½è‰²");
+        bgcolor.add(2, 36, 36, "çº¢è‰²");
+        bgcolor.add(2, 37, 37, "è“è‰²");
+        bgcolor.add(2, 38, 38, "ç»¿è‰²");
+        bgcolor.add(2, 39, 39, "ç´«è‰²");
+        bgcolor.add(2, 40, 40, "é»„è‰²");
+        bgcolor.add(2, 41, 41, "ç°è‰²");*/
+        menu.add(0, 44, 44, "ä¸‹ä¸€é¡µ");
+        menu.add(0, 46, 46, "ä¸Šä¸€é¡µ");
+        menu.add(0, 127, 127, "é€€å‡º");
         return super.onCreateOptionsMenu(menu);   
+
     }
     
     @Override  
@@ -132,19 +142,19 @@ public class DrawActivity extends Activity {
         // TODO Auto-generated method stub
     	if(item.getItemId()==0)
     	{
-    		mAnimView.undo();
+    		MyView.undo();
     	}
     	if(item.getItemId()==2)
     	{
-    		mAnimView.redo();
+    		MyView.redo();
     	}
         if(item.getItemId()==4)  
         {  
-        	mAnimView.clear();
+        	MyView.clear();
         }            
         if(item.getItemId()==6)  
         {  
-        	mAnimView.save();
+        	MyView.save();
         }
         if(item.getItemId()==10)
         {
@@ -156,55 +166,86 @@ public class DrawActivity extends Activity {
         }
         if(item.getItemId()>=15 && item.getItemId()<=22)  
         {  
-        	mAnimView.changecolor(item.getItemId()-15);
+        	if(item.getItemId()==15)MyView.changecolor(Color.BLACK);
+        	else if(item.getItemId()==16)MyView.changecolor(Color.WHITE);
+        	else if(item.getItemId()==17)MyView.changecolor(Color.RED);
+        	else if(item.getItemId()==18)MyView.changecolor(Color.BLUE);
+        	else if(item.getItemId()==19)MyView.changecolor(Color.GREEN);
+        	else if(item.getItemId()==20)MyView.changecolor(0xFFFF00FF);
+        	else if(item.getItemId()==21)MyView.changecolor(0xFFFFFF00);
+        	else if(item.getItemId()==22)MyView.changecolor(Color.GRAY);
+        }
+        if(item.getItemId()>=24&&item.getItemId()<=28)
+        {
+        	if(item.getItemId()==24)MyView.changesize(1);
+        	else if(item.getItemId()==25)MyView.changesize(3);
+        	else if(item.getItemId()==26)MyView.changesize(5);
+        	else if(item.getItemId()==27)MyView.changesize(9);
+        	else if(item.getItemId()==28)MyView.changesize(15);
         }
         if(item.getItemId()>=34 && item.getItemId()<=41)  
         {  
-        	mAnimView.changebg(item.getItemId()-34);
+        	MyView.changebg(item.getItemId()-34);
         }
-        ////////////////////
-        if (item.getItemId()==44) {
-			//nextpage();
+        if(item.getItemId()==127)
+        {
+        	finish();
+        	System.exit(0);
+        }
+        if (item.getItemId() == 44) {
+        	try {
+				hwFileManager.getNextPage();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//next page;
 		}
-        if (item.getItemId()==46) {
-			//prevpage();
+        if (item.getItemId() == 46) {
+        	try {
+				hwFileManager.getPrevPage();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	//prev page;
 		}
-        ////////////////
         /*if(item.getItemId()==30)
         {
         	final EditText inputServer = new EditText(this);
             inputServer.setFocusable(true);
-            inputServer.setText(mAnimView.comment);
+            inputServer.setText(MyView.comment);
         	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        	builder.setTitle("ÉèÖÃÆÀÓï").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
+        	builder.setTitle("Ã‰Ã¨Ã–ÃƒÃ†Ã€Ã“Ã¯").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setPositiveButton("ÃˆÂ·Â¶Â¨", new DialogInterface.OnClickListener() {
         		@Override
         		public void onClick(DialogInterface dialog, int which) {
-        			mAnimView.comment = inputServer.getText().toString();
+        			MyView.comment = inputServer.getText().toString();
         		}
-        	}).setNegativeButton("È¡Ïû", null).show();       	
+        	}).setNegativeButton("ÃˆÂ¡ÃÃ»", null).show();       	
         }*/
         return super.onMenuItemSelected(featureId, item);  
     }  
  
     public void getbgpic() {
     	Intent intent=new Intent();
-        //ÖÆ¶¨ÄÚÈİµÄÀàĞÍÎªÍ¼Ïñ
+        //Ã–Ã†Â¶Â¨Ã„ÃšÃˆÃÂµÃ„Ã€Ã ÃÃÃÂªÃÂ¼ÃÃ±
         intent.setType("image/*");
-        //ÖÆ¶¨µ÷ÓÃÏµÍ³ÄÚÈİµÄaction
+        //Ã–Ã†Â¶Â¨ÂµÃ·Ã“ÃƒÃÂµÃÂ³Ã„ÃšÃˆÃÂµÃ„action
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        //ÏÔÊ¾ÏµÍ³Ïà²á
+        //ÃÃ”ÃŠÂ¾ÃÂµÃÂ³ÃÃ Â²Ã¡
         startActivityForResult(intent, 1);        
     }
     
     public void camera() {
     	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);  
+    	  
         startActivityForResult(intent, 2);
     }
     
     @Override  
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         if (resultCode == RESULT_OK && requestCode == 1) {
-        	mAnimView.background = null;
+        	MyView.background = null;
         	Bundle extras = data.getExtras();
         	Bitmap bitmap = null;
         	if (null != extras){
@@ -213,12 +254,12 @@ public class DrawActivity extends Activity {
         			Matrix m = new Matrix();
         			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
         			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-        			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
         		}
         		else {
         			Matrix m = new Matrix();
            			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-        			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
         		}
         	} else {
             	Uri uri = data.getData();
@@ -228,15 +269,16 @@ public class DrawActivity extends Activity {
             			Matrix m = new Matrix();
             			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-            			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
             		}
             		else {
             			Matrix m = new Matrix();
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-            			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
             		}
             	}
         	}
+        	MyView.saveundolist();
         }
         else if (resultCode == RESULT_OK && requestCode == 2) {
         	Bundle bundle = data.getExtras();  
@@ -245,275 +287,40 @@ public class DrawActivity extends Activity {
     			Matrix m = new Matrix();
     			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
     			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-    			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     		}
     		else {
     			Matrix m = new Matrix();
        			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-    			mAnimView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     		}
+            MyView.saveundolist();
         }
         super.onActivityResult(requestCode, resultCode, data);  
     }   
     
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event)
+	{
+		if((keyCode == KeyEvent.KEYCODE_BACK) && (event.getAction() == KeyEvent.ACTION_DOWN)) {  
+	        finish();
+	        System.exit(0);
+	        return true;
+	    }          
+	    return super.onKeyDown(keyCode, event);
+	}
+   public void setBackgroundImg(Bitmap bitmap) {
+		if (bitmap.getWidth() > bitmap.getHeight()) {
+			Matrix m = new Matrix();
+			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
+  			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
+			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+		}
+		else {
+			Matrix m = new Matrix();
+  			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
+			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+		}
+   }
     
-    
-    public class MyView extends SurfaceView implements Callback,Runnable {  
- 
-     /**Ã¿50Ö¡Ë¢ĞÂÒ»´ÎÆÁÄ»**/    
-    public static final int TIME_IN_FRAME = 5;   
-    
-    /** ÓÎÏ·»­±Ê **/  
-    Paint mPaint[] = new Paint[8];
-    Paint mTextPaint = new Paint();
-    String comment = "";
-    
-    SurfaceHolder mSurfaceHolder = null;
-    
-    private ArrayList<Path> PathList = new ArrayList();
-    private ArrayList<Paint> PaintList = new ArrayList();
-    
-    private ArrayList<Path> Pathundo = new ArrayList();
-    private ArrayList<Paint> Paintundo = new ArrayList();
-    
-    int color = 2;
-    int bgcolor = Color.WHITE;
- 
-    /** ¿ØÖÆÓÎÏ·¸üĞÂÑ­»· **/  
-    boolean mRunning = false;  
-    
-    /** ÓÎÏ·»­²¼ **/  
-    Canvas mCanvas = null;
-    
-    Bitmap background = null;
-
-    /**¿ØÖÆÓÎÏ·Ñ­»·**/  
-    boolean mIsRunning = false;  
-      
-    /**ÇúÏß·½Ïò**/  
-    private Path mPath;  
-      
-    private float mposX, mposY;  
-      
-    public MyView(Context context) {  
-        super(context);  
-        /** ÉèÖÃµ±Ç°ViewÓµÓĞ¿ØÖÆ½¹µã **/  
-        this.setFocusable(true);  
-        /** ÉèÖÃµ±Ç°ViewÓµÓĞ´¥ÃşÊÂ¼ş **/  
-        this.setFocusableInTouchMode(true);  
-        /** ÄÃµ½SurfaceHolder¶ÔÏó **/  
-        mSurfaceHolder = this.getHolder();  
-        /** ½«mSurfaceHolderÌí¼Óµ½Callback»Øµ÷º¯ÊıÖĞ **/  
-        mSurfaceHolder.addCallback(this);  
-        /** ´´½¨»­²¼ **/
-        mCanvas = new Canvas();
-        /** ´´½¨ÇúÏß»­±Ê **/
-        for (int i = 0; i < mPaint.length; i++) {
-            mPaint[i] = new Paint();    
-            /**ÉèÖÃ»­±Ê¿¹¾â³İ**/  
-            mPaint[i].setAntiAlias(true);  
-            /**»­±ÊµÄÀàĞÍ**/  
-            mPaint[i].setStyle(Paint.Style.STROKE);  
-            /**ÉèÖÃ»­±Ê±äÎªÔ²»¬×´**/  
-            mPaint[i].setStrokeCap(Paint.Cap.ROUND);  
-            /**ÉèÖÃÏßµÄ¿í¶È**/  
-            mPaint[i].setStrokeWidth(3);  
-            /**´´½¨Â·¾¶¶ÔÏó**/  
-        }
-        mPaint[0].setColor(Color.BLACK);
-        mPaint[1].setColor(Color.WHITE);
-        mPaint[2].setColor(Color.RED);
-        mPaint[3].setColor(Color.BLUE);
-        mPaint[4].setColor(Color.GREEN);
-        mPaint[5].setColor(Color.argb(255, 255, 0, 255));
-        mPaint[6].setColor(Color.argb(255, 255, 255, 0));
-        mPaint[7].setColor(Color.GRAY);
-        
-        /** ´´½¨ÎÄ×Ö»­±Ê **/
-        //mTextPaint.setTextSize(60);
-        //mTextPaint.setColor(Color.RED);
-    } 
- 
-    @Override  
-    public boolean onTouchEvent(MotionEvent event) {  
-        /** ÄÃµ½´¥ÃşµÄ×´Ì¬ **/  
-        int action = event.getAction();  
-        float x = event.getX();  
-        float y = event.getY();  
-        switch (action) {  
-        // ´¥Ãş°´ÏÂµÄÊÂ¼ş  
-        case MotionEvent.ACTION_DOWN:  
-        /**ÉèÖÃÇúÏß¹ì¼£Æğµã X Y×ø±ê**/  
-        	PathList.add(new Path());
-        	PaintList.add(mPaint[color]);
-        	mPath = PathList.get(PathList.size()-1);
-        	mPath.moveTo(x, y);  
-        	break;  
-        // ´¥ÃşÒÆ¶¯µÄÊÂ¼ş  
-        case MotionEvent.ACTION_MOVE:  
-        /**ÉèÖÃÇúÏß¹ì¼£**/  
-        //²ÎÊı1 ÆğÊ¼µãX×ø±ê  
-        //²ÎÊı2 ÆğÊ¼µãY×ø±ê  
-        //²ÎÊı3 ½áÊøµãX×ø±ê  
-        //²ÎÊı4 ½áÊøµãY×ø±ê  
-        	mPath.quadTo(mposX, mposY, x, y);  
-        	break;  
-        // ´¥ÃşÌ§ÆğµÄÊÂ¼ş  
-        case MotionEvent.ACTION_UP:  
-        /**°´¼üÌ§ÆğºóÇå¿ÕÂ·¾¶¹ì¼£**/ 
-        //mPath.reset();
-        	Pathundo.clear();
-        	Paintundo.clear();
-        break;  
-        }  
-       //¼ÇÂ¼µ±Ç°´¥ÃşX Y×ø±ê  
-        mposX = x;  
-        mposY = y;  
-        return true;  
-    }  
-          
-    private void Draw(Canvas canvas) {  
-        /**Çå¿Õ»­²¼**/  
-    	canvas.drawColor(bgcolor);
-    	if (background != null) canvas.drawBitmap(background, 0, 0, null);
-        /**»æÖÆÇúÏß**/  
-        int i;
-        for (i = 0; i < PathList.size(); i++) {          
-        	canvas.drawPath(PathList.get(i), PaintList.get(i));
-        }
-        
-        //canvas.drawText(comment, 0, getWindowManager().getDefaultDisplay().getHeight(), mTextPaint);
-        /**¼ÇÂ¼µ±Ç°´¥µãÎ»ÖÃ**/  
-        //mCanvas.drawText("µ±Ç°´¥±Ê X£º" + mposX, 0, 20,mTextPaint);  
-        //mCanvas.drawText("µ±Ç°´¥±Ê Y£º" + mposY, 0, 40,mTextPaint);  
-    }  
-      
-    @Override  
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,  
-        int height) {  
- 
-    }  
- 
-    @Override  
-    public void surfaceCreated(SurfaceHolder holder) {  
-        /**¿ªÊ¼ÓÎÏ·Ö÷Ñ­»·Ïß³Ì**/  
-        mIsRunning = true;  
-        new Thread(this).start();  
-    }  
- 
-    @Override  
-    public void surfaceDestroyed(SurfaceHolder holder) {  
-        mIsRunning = false;  
-    }
-    
-    public void undo() {
-    	if (!PathList.isEmpty()) {
-    		Path tmppath = PathList.remove(PathList.size()-1);
-    		Pathundo.add(tmppath);
-    		Paint tmppaint = PaintList.remove(PaintList.size()-1);
-    		Paintundo.add(tmppaint);
-    	}
-    }
-    
-    public void redo() {
-    	if (!Pathundo.isEmpty()) {
-    		Path tmppath = Pathundo.remove(Pathundo.size()-1);
-    		PathList.add(tmppath);
-    		Paint tmppaint = Paintundo.remove(Paintundo.size()-1);
-    		PaintList.add(tmppaint);    		
-    	}
-    }
-    
-    public void clear() {
-    	for (Path p:PathList) {
-    		p.reset();
-    	}
-    	PathList.clear();
-    	PaintList.clear();
-    	Pathundo.clear();
-    	Paintundo.clear();
-    	background = null;
-    }
-    
-    public void changecolor(int newcolor) {
-    	color = newcolor;
-    	//PathList.add(new Path());
-    	//PaintList.add(mPaint[color]);
-    	//mPath = PathList.get(PathList.size()-1);
-    	//mTextPaint.setColor(mPaint[color].getColor());
-    }
-    
-    public void changebg(int newcolor) {
-    	if(newcolor == 0)bgcolor = Color.BLACK;
-    	if(newcolor == 1)bgcolor = Color.WHITE;
-    	if(newcolor == 2)bgcolor = Color.RED;
-    	if(newcolor == 3)bgcolor = Color.BLUE;
-    	if(newcolor == 4)bgcolor = Color.GREEN;
-    	if(newcolor == 5)bgcolor = Color.argb(255, 255, 0, 255);
-    	if(newcolor == 6)bgcolor = Color.argb(255, 255, 255, 0);
-    	if(newcolor == 7)bgcolor = Color.GRAY;
-    	background = null;
-    }
-    
- 
-    @Override  
-    public void run() {  
-        while (mIsRunning) {  
- 
-        /** È¡µÃ¸üĞÂÓÎÏ·Ö®Ç°µÄÊ±¼ä **/  
-        long startTime = System.currentTimeMillis();  
- 
-        /** ÔÚÕâÀï¼ÓÉÏÏß³Ì°²È«Ëø **/  
-        synchronized (mSurfaceHolder) {  
-            /** ÄÃµ½µ±Ç°»­²¼ È»ºóËø¶¨ **/  
-            mCanvas = mSurfaceHolder.lockCanvas();  
-            Draw(mCanvas);
-            /** »æÖÆ½áÊøºó½âËøÏÔÊ¾ÔÚÆÁÄ»ÉÏ **/  
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas);  
-        }  
- 
-        /** È¡µÃ¸üĞÂÓÎÏ·½áÊøµÄÊ±¼ä **/  
-        long endTime = System.currentTimeMillis();  
- 
-        /** ¼ÆËã³öÓÎÏ·Ò»´Î¸üĞÂµÄºÁÃëÊı **/  
-        int diffTime = (int) (endTime - startTime);  
- 
-        /** È·±£Ã¿´Î¸üĞÂÊ±¼äÎª50Ö¡ **/  
-        while (diffTime <= TIME_IN_FRAME) {  
-            diffTime = (int) (System.currentTimeMillis() - startTime);  
-            /** Ïß³ÌµÈ´ı **/  
-            Thread.yield();  
-        }  
- 
-        }  
- 
-    }
-    
-    public void save() {           
-		Bitmap mbitmap = Bitmap.createBitmap(getWindowManager().getDefaultDisplay().getWidth(), getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-		Canvas savecv = new Canvas(mbitmap);
-		Draw(savecv);
-		
-        File dir = new File("/mnt/sdcard/Drawer");
-        if (!dir.exists()) {
-        	dir.mkdir();
-        }           
-        String picname = ((Long)System.currentTimeMillis()).toString()+".png";
-        try {
-			FileOutputStream fos = new FileOutputStream(new File(dir.getPath() + "/" + picname));
-			mbitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-			fos.flush();
-			fos.close();
-			Toast toast=Toast.makeText(getApplicationContext(), "±£´æÎª"+picname, Toast.LENGTH_SHORT);
-			toast.show();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}   
-    }
-    
-    }  
 } 

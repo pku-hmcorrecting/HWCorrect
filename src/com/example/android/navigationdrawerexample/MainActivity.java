@@ -71,6 +71,7 @@ import android.widget.SimpleAdapter;
  * for example enabling or disabling a data overlay on top of the current content.</p>
  */
 public class MainActivity extends Activity {
+	public final static String LIST_NUMBER_MESSAGE = "com.wym.HWCorrect.list_number";
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
         for(int i=0;i<10;i++)  
         {  
             HashMap<String, Object> map = new HashMap<String, Object>(); 
-            map.put("ItemTitle", "HomeWork "+i);  
+            map.put("ItemTitle", "HomeWork "+(i+1));  
             map.put("ItemText", "Submitted in 2014.4.14");  
             listItem.add(map);  
         }  
@@ -123,12 +124,13 @@ public class MainActivity extends Activity {
             @Override  
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,  
                     long arg3) {  
-                sendMessage(arg0); 
+                //sendMessage(arg0);
+            	invokeHWListActivity(arg0, arg2+1);
             }  
         });  
           
       //添加长按点击  
-        list.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {  
+        /*list.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {  
               
             @Override  
             public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {  
@@ -136,7 +138,7 @@ public class MainActivity extends Activity {
                 menu.add(0, 0, 0, "弹出长按菜单0");  
                 menu.add(0, 1, 0, "弹出长按菜单1");     
             }  
-        });   
+        }); */  
     }
     
   //长按菜单响应函数  
@@ -279,6 +281,13 @@ public class MainActivity extends Activity {
     /** Called when the user clicks the Send button */
     public void sendMessage(View view) {
         Intent intent = new Intent(this, DrawActivity.class);
+        startActivity(intent);
+    }
+    
+    /** Called when the user clicks the list item */
+    public void invokeHWListActivity(View view, int listNumber) {
+        Intent intent = new Intent(this, HWListActivity.class);
+        intent.putExtra(LIST_NUMBER_MESSAGE, listNumber);
         startActivity(intent);
     }
     

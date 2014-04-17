@@ -151,6 +151,13 @@ public class DrawActivity extends Activity implements OnClickListener {
         if(item.getItemId()==4)  
         {  
         	MyView.clear();
+        	MyView.curPageNo--;
+        	try {
+				hwFileManager.getNextPage();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }            
         if(item.getItemId()==6)  
         {  

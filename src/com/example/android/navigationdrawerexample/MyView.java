@@ -243,9 +243,16 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   float drawx, drawy;
 	   	
 	   while(i < pointcnt - 5){
+		   int step;
+		   if(i < 2){ 
+			   step = (int)Math.max(movespeed[i], movespeed[i+3])*15;
+			   step = (int)Math.max(30, step);
+		   }
 	   		//movespeed[i + 3] = (float)(movespeed[i]*0.5 + movespeed[i + 3]*0.5);
-	   		for (j = 0; j < 100; j++){
-	   			t = ((float) j) / 100;  
+		   else
+			   step = (int)Math.max(15,(movespeed[i]+ movespeed[i+3])*7);
+	   		for (j = 0; j < step; j++){
+	   			t = ((float) j) / step;  
 	   			tt = t * t;  
 	   			ttt = tt * t;  
 	   			u = 1 - t;  
@@ -269,8 +276,9 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   		}
 	   		i += 3;
 	   		if (i >= pointcnt - 5){
-	   			for (j = 0; j < 100; j++){
-	       			t = ((float) j) / 100;  
+	   			step = (int)Math.max(15,(movespeed[i]+ movespeed[i+3])*7);
+	   			for (j = 0; j < step; j++){
+	       			t = ((float) j) / step;  
 	       			tt = t * t;  
 	       			ttt = tt * t;  
 	       			u = 1 - t;  
@@ -287,8 +295,8 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   			    drawy += 3 * u * tt * ypoint[i + 2];  
 	   			    drawy += ttt * ypoint[i + 3];
 	   			      
-	   			    mPaint.setStrokeWidth((float)(3 + 140/(8 + movespeed[i]*movespeed[i]) - 
-	     						0.8*t*140/(movespeed[i]*movespeed[i] + 8)));  
+	   			    mPaint.setStrokeWidth((float)(size + 120/(8 + movespeed[i]*movespeed[i]) - 
+	     						0.8*t*120/(movespeed[i]*movespeed[i] + 8)));  
 	       			canvas.drawPoint(drawx, drawy, mPaint);
 	   			}
 	   		}

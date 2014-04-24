@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView; 
  
 public class DrawActivity extends Activity implements OnClickListener {  
     
@@ -31,6 +33,7 @@ public class DrawActivity extends Activity implements OnClickListener {
 	private int month;
 	private int day;
 	private int studentId;
+	private MyView myView;
  
     @Override  
     public void onCreate(Bundle savedInstanceState) {  
@@ -39,8 +42,9 @@ public class DrawActivity extends Activity implements OnClickListener {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  
             //WindowManager.LayoutParams.FLAG_FULLSCREEN);  
         setContentView(R.layout.activity_draw);
-        MyView.mainactivity = this;
-        MyView.curPageNo = 1;
+        myView = (MyView)findViewById(R.id.view3d);
+        myView.mainactivity = this;
+        myView.curPageNo = 1;
         Intent intent = this.getIntent();
 	    teacherId = intent.getIntExtra("teacherId", 1);
 	    courseId = intent.getIntExtra("courseId", 1);
@@ -50,6 +54,7 @@ public class DrawActivity extends Activity implements OnClickListener {
 	    studentId = intent.getIntExtra("studentId", 1100012844);
 		try {
 			hwFileManager = new HomeworkFileManager(this, teacherId, courseId, year, month, day, studentId);
+			hwFileManager.setMyView(myView);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,16 +147,16 @@ public class DrawActivity extends Activity implements OnClickListener {
         // TODO Auto-generated method stub
     	if(item.getItemId()==0)
     	{
-    		MyView.undo();
+    		myView.undo();
     	}
     	if(item.getItemId()==2)
     	{
-    		MyView.redo();
+    		myView.redo();
     	}
         if(item.getItemId()==4)  
         {  
-        	MyView.clear();
-        	MyView.curPageNo--;
+        	myView.clear();
+        	myView.curPageNo--;
         	try {
 				hwFileManager.getNextPage();
 			} catch (Exception e) {
@@ -161,7 +166,7 @@ public class DrawActivity extends Activity implements OnClickListener {
         }            
         if(item.getItemId()==6)  
         {  
-        	MyView.save();
+        	myView.save();
         }
         if(item.getItemId()==10)
         {
@@ -173,26 +178,26 @@ public class DrawActivity extends Activity implements OnClickListener {
         }
         if(item.getItemId()>=15 && item.getItemId()<=22)  
         {  
-        	if(item.getItemId()==15)MyView.changecolor(Color.BLACK);
-        	else if(item.getItemId()==16)MyView.changecolor(Color.WHITE);
-        	else if(item.getItemId()==17)MyView.changecolor(Color.RED);
-        	else if(item.getItemId()==18)MyView.changecolor(Color.BLUE);
-        	else if(item.getItemId()==19)MyView.changecolor(Color.GREEN);
-        	else if(item.getItemId()==20)MyView.changecolor(0xFFFF00FF);
-        	else if(item.getItemId()==21)MyView.changecolor(0xFFFFFF00);
-        	else if(item.getItemId()==22)MyView.changecolor(Color.GRAY);
+        	if(item.getItemId()==15)myView.changecolor(Color.BLACK);
+        	else if(item.getItemId()==16)myView.changecolor(Color.WHITE);
+        	else if(item.getItemId()==17)myView.changecolor(Color.RED);
+        	else if(item.getItemId()==18)myView.changecolor(Color.BLUE);
+        	else if(item.getItemId()==19)myView.changecolor(Color.GREEN);
+        	else if(item.getItemId()==20)myView.changecolor(0xFFFF00FF);
+        	else if(item.getItemId()==21)myView.changecolor(0xFFFFFF00);
+        	else if(item.getItemId()==22)myView.changecolor(Color.GRAY);
         }
         if(item.getItemId()>=24&&item.getItemId()<=28)
         {
-        	if(item.getItemId()==24)MyView.changesize(1);
-        	else if(item.getItemId()==25)MyView.changesize(3);
-        	else if(item.getItemId()==26)MyView.changesize(5);
-        	else if(item.getItemId()==27)MyView.changesize(9);
-        	else if(item.getItemId()==28)MyView.changesize(15);
+        	if(item.getItemId()==24)myView.changesize(1);
+        	else if(item.getItemId()==25)myView.changesize(3);
+        	else if(item.getItemId()==26)myView.changesize(5);
+        	else if(item.getItemId()==27)myView.changesize(9);
+        	else if(item.getItemId()==28)myView.changesize(15);
         }
         if(item.getItemId()>=34 && item.getItemId()<=41)  
         {  
-        	MyView.changebg(item.getItemId()-34);
+        	myView.changebg(item.getItemId()-34);
         }
         if(item.getItemId()==127)
         {
@@ -221,12 +226,12 @@ public class DrawActivity extends Activity implements OnClickListener {
         {
         	final EditText inputServer = new EditText(this);
             inputServer.setFocusable(true);
-            inputServer.setText(MyView.comment);
+            inputServer.setText(myView.comment);
         	AlertDialog.Builder builder = new AlertDialog.Builder(this);
         	builder.setTitle("ÉèÖÃÆÀÓï").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer).setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
         		@Override
         		public void onClick(DialogInterface dialog, int which) {
-        			MyView.comment = inputServer.getText().toString();
+        			myView.comment = inputServer.getText().toString();
         		}
         	}).setNegativeButton("È¡Ïû", null).show();       	
         }*/
@@ -252,7 +257,7 @@ public class DrawActivity extends Activity implements OnClickListener {
     @Override  
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         if (resultCode == RESULT_OK && requestCode == 1) {
-        	MyView.background = null;
+        	myView.background = null;
         	Bundle extras = data.getExtras();
         	Bitmap bitmap = null;
         	if (null != extras){
@@ -261,12 +266,16 @@ public class DrawActivity extends Activity implements OnClickListener {
         			Matrix m = new Matrix();
         			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
         			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-        			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			myView.mCanvas.setBitmap(myView.background);
+        			myView.setImageBitmap(myView.background);
         		}
         		else {
         			Matrix m = new Matrix();
            			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-        			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+        			myView.mCanvas.setBitmap(myView.background);
+        			myView.setImageBitmap(myView.background);
         		}
         	} else {
             	Uri uri = data.getData();
@@ -276,16 +285,21 @@ public class DrawActivity extends Activity implements OnClickListener {
             			Matrix m = new Matrix();
             			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-            			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			myView.mCanvas.setBitmap(myView.background);
+            			myView.setImageBitmap(myView.background);
             		}
             		else {
             			Matrix m = new Matrix();
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-            			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+            			myView.mCanvas.setBitmap(myView.background);
+            			myView.setImageBitmap(myView.background);
             		}
             	}
         	}
-        	MyView.saveundolist();
+        	
+        	myView.saveundolist();
         }
         else if (resultCode == RESULT_OK && requestCode == 2) {
         	Bundle bundle = data.getExtras();  
@@ -294,14 +308,18 @@ public class DrawActivity extends Activity implements OnClickListener {
     			Matrix m = new Matrix();
     			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
     			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-    			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			myView.mCanvas.setBitmap(myView.background);
+    			myView.setImageBitmap(myView.background);
     		}
     		else {
     			Matrix m = new Matrix();
        			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-    			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+    			myView.mCanvas.setBitmap(myView.background);
+    			myView.setImageBitmap(myView.background);
     		}
-            MyView.saveundolist();
+            myView.saveundolist();
         }
         super.onActivityResult(requestCode, resultCode, data);  
     }   
@@ -321,13 +339,24 @@ public class DrawActivity extends Activity implements OnClickListener {
 			Matrix m = new Matrix();
 			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
   			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+			myView.mCanvas.setBitmap(myView.background);
+			myView.setImageBitmap(myView.background);
 		}
 		else {
 			Matrix m = new Matrix();
   			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-			MyView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-		}
+			myView.background = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+			if (myView  != null){
+			myView.mCanvas.setBitmap(myView.background);
+			myView.setImageBitmap(myView.background);
+			}
+			else
+			{
+				int a = 1;
+				int b = 2;
+			}
+			}
    }
     
 } 

@@ -19,55 +19,45 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MyView extends SurfaceView implements Callback,Runnable {  
-   static int curPageNo;
-    /**每50帧刷新一次屏幕**/    
-   static final int TIME_IN_FRAME = 50;
+public class MyView extends ImageView {  
+   int curPageNo;
    
-   static DrawActivity mainactivity;
+   DrawActivity mainactivity;
    
    /** 游戏画笔 **/  
-   static Paint mPaint = new Paint();
-   static String comment = "";
+   Paint mPaint = new Paint();
+   String comment = "";
+   long curtime = 0, prevtime = 0;
    
-   static SurfaceHolder mSurfaceHolder = null;
    
-   private static float[] xpoint = new float[20000];
-   private static float[] ypoint = new float[20000];
-   private static float[] movespeed = new float[20000];
+   ArrayList<Bitmap> undobitmap = new ArrayList<Bitmap>();
+   ArrayList<Bitmap> redobitmap = new ArrayList<Bitmap>();
    
-   static ArrayList<Bitmap> undobitmap = new ArrayList();
-   static ArrayList<Bitmap> redobitmap = new ArrayList();
    
-   static boolean stopdraw = true;
+   boolean hasCorrect = false;
    
-   static boolean hasCorrect = false;
-   
-   static int color = 2;
-   static int size = 5;
-   static int bgcolor = Color.WHITE;
-
-   /** 控制游戏更新循环 **/  
-   static boolean mRunning = false;  
+   int color = 2;
+   int size = 5;
+   int bgcolor = Color.WHITE;
+ 
    
    /** 游戏画布 **/  
-   static Canvas mCanvas = null;
+   public Canvas mCanvas = null;
    
-   static Bitmap background = null;
+   public Bitmap background = null;
 
    /**控制游戏循环**/  
-   static boolean mIsRunning = false;  
+   boolean mIsRunning = false;  
      
-   /**曲线方向**/  
-   static private Path mPath;      
-   static private float mposX, mposY; 
-   static private float con1, con2, con3, con4; 
-   static private float prex, prey;  
-   static private float preprex, preprey;
+   /**普通钢笔**/
+   usualPen myUsualPen = new usualPen();
    
-   private long pretime, prepretime, deltatime;
+   
+   static private double prex, prey, prev,curv;  
+   
    
    int contr = 0, pointThreeFlag = 0;
    static int ini_v = 0, ini_width = 3, pointcnt = 0, prepointcnt = 0;
@@ -79,10 +69,10 @@ public class MyView extends SurfaceView implements Callback,Runnable {
        this.setFocusable(true);  
        /** 设置当前View拥有触摸事件 **/  
        this.setFocusableInTouchMode(true);  
-       /** 拿到SurfaceHolder对象 **/  
-       mSurfaceHolder = this.getHolder();  
+      /** 拿到SurfaceHolder对象 **/  
+       //mSurfaceHolder = this.getHolder();  
        /** 将mSurfaceHolder添加到Callback回调函数中 **/  
-       mSurfaceHolder.addCallback(this);  
+       //mSurfaceHolder.addCallback(this);  
        /** 创建画布 **/
        mCanvas = new Canvas();
        /** 创建曲线画笔 **/
@@ -90,17 +80,11 @@ public class MyView extends SurfaceView implements Callback,Runnable {
        /**设置画笔抗锯齿**/  
        mPaint.setAntiAlias(true);  
        /**画笔的类型**/  
-       mPaint.setStyle(Paint.Style.STROKE);  
-       /**设置画笔变为圆滑状**/  
-       mPaint.setStrokeCap(Paint.Cap.ROUND);  
-       /**设置线的宽度**/  
-       mPaint.setStrokeWidth(size);
+       mPaint.setFilterBitmap(true);
+       mPaint.setStyle(Paint.Style.FILL);  
+
        mPaint.setColor(Color.RED);
-       mPath = new Path();
        
-       /** 创建文字画笔 **/
-       //mTextPaint.setTextSize(60);
-       //mTextPaint.setColor(Color.RED);
    } 
 
    @Override  
@@ -108,220 +92,54 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   hasCorrect = true;
        /** 拿到触摸的状态 **/  
        int action = event.getAction();  
-       float x = event.getX();  
-       float y = event.getY();
-       long time = System.currentTimeMillis();
+       double x = event.getX();  
+       double y = event.getY();
+       curtime = event.getEventTime();
        switch (action) {  
        // 触摸按下的事件  
        case MotionEvent.ACTION_DOWN:  
        /**设置曲线轨迹起点 X Y坐标**/  
-       	mPath.moveTo(x, y);
        	saveundolist();
-       	stopdraw = false;
     	prex = x;
     	prey = y;
-    	pointcnt = 0;
-    	xpoint[pointcnt] = x;
-    	ypoint[pointcnt] = y;
-    	prepointcnt = pointcnt;
-    	movespeed[pointcnt] = 0;
-    	pretime = time;
-    	pointcnt++;
+    	prev = 0;
        	break;  
        // 触摸移动的事件  
        case MotionEvent.ACTION_MOVE:  
-       /**设置曲线轨迹**/  
-       //参数1 起始点X坐标  
-       //参数2 起始点Y坐标  
-       //参数3 结束点X坐标  
-       //参数4 结束点Y坐标  
-    	   if(contr == 1){
-           	con3 = (float)(prex + (preprex - x)/4.0*0.6);
-           	 
-           	con4 = (float)(prey + (preprey - y)/4.0*0.6);
-           	
-           	if (pointThreeFlag < 1) pointThreeFlag++;
-           	else{
-               	deltatime = pretime - prepretime;
-               	
-           		xpoint[pointcnt] = con3;
-               	ypoint[pointcnt] = con4;
-               	pointcnt++;
-           		xpoint[pointcnt] = prex;
-               	ypoint[pointcnt] = prey;
-               	double dis = (prex - preprex)*(prex - preprex)
-               			+ (prey - preprey)*(prey - preprey);
-               	movespeed[pointcnt] = ((float)Math.sqrt(dis))/(deltatime);
-               	movespeed[pointcnt - 2] = movespeed[pointcnt - 1]
-               			= movespeed[pointcnt];
-               	pointcnt++;
-               	
-           		mPath.cubicTo(con1, con2, con3, con4, prex, prey);
-           	}
-
-           	con1 = (float)(prex - (preprex - x)/4.0*0.6);
-           	con2 = (float)(prey - (preprey - y)/4.0*0.6);
-           	xpoint[pointcnt] = con1;
-           	ypoint[pointcnt] = con2;
-           	pointcnt++;
-           	}
-           	contr = (contr + 1)%2;
+       /**绘制曲线**/  
+    	curv = Math.sqrt((x-prex)*(x-prex) + (y-prey)*(y-prey));
+    	curv = curv / ((double)(curtime - prevtime)/1000);
+    	if (prev == 0) prev = 1.5 * curv;
+    	mCanvas.save();
+    	myUsualPen.paintOncanvas(prex, prey, x, y, prev, curv, mPaint, mCanvas);
+    	mCanvas.restore();
+    	prex = x;
+    	prey = y;
+    	prev = curv;
+    	setImageBitmap(background);
        	break;  
        // 触摸抬起的事件  
        case MotionEvent.ACTION_UP:  
        /**按键抬起后清空路径轨迹**/ 
        //mPath.reset();
-    	   if(true){
-       		con3 = (float)(prex + (preprex - x)/4.0*0.6);
-          	 
-           	con4 = (float)(prey + (preprey - y)/4.0*0.6);
-           	
-           	if (pointThreeFlag < 1) pointThreeFlag++;
-           	else{
-               	deltatime = pretime - prepretime;
-               	
-           		xpoint[pointcnt] = con3;
-               	ypoint[pointcnt] = con4;
-               	pointcnt++;
-           		xpoint[pointcnt] = prex;
-               	ypoint[pointcnt] = prey;
-               	double dis = (prex - preprex)*(prex - preprex)
-               			+ (prey - preprey)*(prey - preprey);
-               	movespeed[pointcnt] = ((float)Math.sqrt(dis))/(deltatime);
-               	movespeed[pointcnt - 2] = movespeed[pointcnt - 1]
-               			= movespeed[pointcnt];
-               	pointcnt++;
-           		mPath.cubicTo(con1, con2, con3, con4, prex, prey);
-           	}
-
-           	con1 = (float)(prex - (preprex - x)/4.0*0.6);
-           	con2 = (float)(prey - (preprey - y)/4.0*0.6);
-           	xpoint[pointcnt] = con1;
-           	ypoint[pointcnt] = con2;
-           	pointcnt++;
-           }
-    	contr = 0;
-    	pointThreeFlag = 0;
-       	ini_v = 0;
-    	ini_width = 3;
-    	mPath.reset();
-    	stopdraw = true;
+    	curv = Math.sqrt((x-prex)*(x-prex) + (y-prey)*(y-prey));
+    	curv = curv / ((double)(curtime - prevtime)/1000);
+       	if (prev == 0) prev = 1.5 * curv;
+       	curv = curv*40;
+       	mCanvas.save();
+       	myUsualPen.paintOncanvas(prex, prey, x, y, prev, curv, mPaint, mCanvas);
+       	mCanvas.restore();
+       	setImageBitmap(background);
        break;  
        }  
-      //记录当前触摸X Y坐标  
-       if(contr == 0){
-           preprex = prex;
-           preprey = prey;
-           prex = x;
-           prey = y;
-           }
-           if(contr == 0){
-           prepretime = pretime;
-           pretime = time;
-       }
+       prevtime = curtime;
        return true;  
    }  
-         
-   private static void Draw(Canvas canvas) {
-	   if (canvas == null) return;
-	   canvas.drawColor(bgcolor);
-	   if (background != null) canvas.drawBitmap(background, 0, 0, null); 
-   	   if (stopdraw) return;
-       drawcanvas(mCanvas);
-       Bitmap mbitmap = Bitmap.createBitmap(mainactivity.getWindowManager().getDefaultDisplay().getWidth(), mainactivity.getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-       Canvas tmpcv = new Canvas(mbitmap);
-       tmpcv.drawColor(bgcolor);
-       if (background != null) tmpcv.drawBitmap(background, 0, 0, null);
-       drawcanvas(tmpcv);
-       background = mbitmap;
-  
-   }  
    
-   public static void drawcanvas(Canvas canvas) {
-	   int i = 0, j;
-	   float t, tt, ttt, u, uu, uuu;
-	   float drawx, drawy;
-	   	
-	   while(i < pointcnt - 5){
-		   int step;
-		   if(i < 2){ 
-			   step = (int)Math.max(movespeed[i], movespeed[i+3])*15;
-			   step = (int)Math.max(30, step);
-		   }
-	   		//movespeed[i + 3] = (float)(movespeed[i]*0.5 + movespeed[i + 3]*0.5);
-		   else
-			   step = (int)Math.max(15,(movespeed[i]+ movespeed[i+3])*7);
-	   		for (j = 0; j < step; j++){
-	   			t = ((float) j) / step;  
-	   			tt = t * t;  
-	   			ttt = tt * t;  
-	   			u = 1 - t;  
-	   			uu = u * u;  
-	   			uuu = uu * u;  
-	 
-				    drawx = uuu * xpoint[i];  
-				    drawx += 3 * uu * t * xpoint[i + 1];  
-				    drawx += 3 * u * tt * xpoint[i + 2];  
-				    drawx += ttt * xpoint[i + 3];  
-				  
-				    drawy = uuu * ypoint[i];  
-				    drawy += 3 * uu * t * ypoint[i + 1];  
-				    drawy += 3 * u * tt * ypoint[i + 2];  
-				    drawy += ttt * ypoint[i + 3];
-				      
-				    mPaint.setStrokeWidth((float)(size + 120/(8 + movespeed[i]*movespeed[i]) + 
-	 						t*(120/(movespeed[i + 3]*movespeed[i + 3] + 8) - 
-	 								120/(movespeed[i]*movespeed[i] + 8))));  
-	   			canvas.drawPoint(drawx, drawy, mPaint);
-	   		}
-	   		i += 3;
-	   		if (i >= pointcnt - 5){
-	   			step = (int)Math.max(15,(movespeed[i]+ movespeed[i+3])*7);
-	   			for (j = 0; j < step; j++){
-	       			t = ((float) j) / step;  
-	       			tt = t * t;  
-	       			ttt = tt * t;  
-	       			u = 1 - t;  
-	       			uu = u * u;  
-	       			uuu = uu * u;  
-	     
-	   			    drawx = uuu * xpoint[i];  
-	   			    drawx += 3 * uu * t * xpoint[i + 1];  
-	   			    drawx += 3 * u * tt * xpoint[i + 2];  
-	   			    drawx += ttt * xpoint[i + 3];  
-	   			  
-	   			    drawy = uuu * ypoint[i];  
-	   			    drawy += 3 * uu * t * ypoint[i + 1];  
-	   			    drawy += 3 * u * tt * ypoint[i + 2];  
-	   			    drawy += ttt * ypoint[i + 3];
-	   			      
-	   			    mPaint.setStrokeWidth((float)(size + 120/(8 + movespeed[i]*movespeed[i]) - 
-	     						0.8*t*120/(movespeed[i]*movespeed[i] + 8)));  
-	       			canvas.drawPoint(drawx, drawy, mPaint);
-	   			}
-	   		}
-	   	}
-   }
      
-   @Override  
-   public void surfaceChanged(SurfaceHolder holder, int format, int width,  
-       int height) {  
 
-   }  
-
-   @Override  
-   public void surfaceCreated(SurfaceHolder holder) {  
-       /**开始游戏主循环线程**/  
-       mIsRunning = true;  
-       new Thread(this).start();  
-   }  
-
-   @Override  
-   public void surfaceDestroyed(SurfaceHolder holder) {  
-       mIsRunning = false;  
-   }
    
-   public static void undo() {
+   public void undo() {
 	   if (undobitmap.isEmpty()) return;
 	   redobitmap.add(background);
 	   Bitmap tmp = undobitmap.get(undobitmap.size()-1);
@@ -329,7 +147,7 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   background = tmp;
    }
    
-   public static void redo() {
+   public void redo() {
 	   if (redobitmap.isEmpty()) return;
 	   undobitmap.add(background);
 	   Bitmap tmp = redobitmap.get(redobitmap.size()-1);
@@ -337,19 +155,19 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 	   background = tmp;
    }
    
-   public static void clear() {
+   public void clear() {
 	   saveundolist();
 	   hasCorrect = false;
    	   background = null;
    }
    
-   public static void saveundolist() {
+   public void saveundolist() {
 	   undobitmap.add(background);
 	   if (undobitmap.size() > 12) undobitmap.remove(0);
        redobitmap.clear();
    }
    
-   public static void changecolor(int newcolor) {
+   public void changecolor(int newcolor) {
    	   mPaint.setColor(newcolor);
    	//PathList.add(new Path());
    	//PaintList.add(mPaint[color]);
@@ -357,11 +175,11 @@ public class MyView extends SurfaceView implements Callback,Runnable {
    	//mTextPaint.setColor(mPaint[color].getColor());
    }
    
-   public static void changesize(int newsize) {
+   public void changesize(int newsize) {
 	   size = newsize;
    }
    
-   public static void changebg(int newcolor) {
+   public void changebg(int newcolor) {
 	   saveundolist();
    	if(newcolor == 0)bgcolor = Color.BLACK;
    	if(newcolor == 1)bgcolor = Color.WHITE;
@@ -375,40 +193,9 @@ public class MyView extends SurfaceView implements Callback,Runnable {
    }
    
 
-   @Override  
-   public void run() {  
-       while (mIsRunning) {  
 
-       /** 取得更新游戏之前的时间 **/  
-   //    long startTime = System.currentTimeMillis();  
-
-       /** 在这里加上线程安全锁 **/  
-       synchronized (mSurfaceHolder) {  
-           /** 拿到当前画布 然后锁定 **/  
-           mCanvas = mSurfaceHolder.lockCanvas();  
-           if (mIsRunning) Draw(mCanvas);
-           /** 绘制结束后解锁显示在屏幕上 **/
-           if (mCanvas != null) mSurfaceHolder.unlockCanvasAndPost(mCanvas);  
-       }  
-
-       /** 取得更新游戏结束的时间 **/  
-    //   long endTime = System.currentTimeMillis();  
-
-       /** 计算出游戏一次更新的毫秒数 **/  
-    //   int diffTime = (int) (endTime - startTime);  
-
-       /** 确保每次更新时间为50帧 **/  
-     //  while (diffTime <= 20) {  
-     //      diffTime = (int) (System.currentTimeMillis() - startTime);  
-           /** 线程等待 **/  
-     //      Thread.yield();  
-     //  }  
-
-       }  
-
-   }
    
-   public static void save() {           
+   public void save() {           
 		Bitmap mbitmap = Bitmap.createBitmap(mainactivity.getWindowManager().getDefaultDisplay().getWidth(), mainactivity.getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
         if (background != null) mbitmap = background;
         else {
@@ -419,7 +206,7 @@ public class MyView extends SurfaceView implements Callback,Runnable {
        File dir = new File("/mnt/sdcard/Drawer");
        if (!dir.exists()) {
        	dir.mkdir();
-       }           
+       }       
        String picname = ((Long)System.currentTimeMillis()).toString()+".png";
        try {
 			FileOutputStream fos = new FileOutputStream(new File(dir.getPath() + "/" + picname));
@@ -437,7 +224,7 @@ public class MyView extends SurfaceView implements Callback,Runnable {
 		}   
    }
    
-   public static Bitmap getCurPageBitmap() {
+   public Bitmap getCurPageBitmap() {
 	   Bitmap mbitmap = Bitmap.createBitmap(mainactivity.getWindowManager().getDefaultDisplay().getWidth(), mainactivity.getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
        if (background != null) mbitmap = background;
        else {
@@ -446,6 +233,6 @@ public class MyView extends SurfaceView implements Callback,Runnable {
        }
        return mbitmap;
 	
-}
+   }
 
-   }  
+ }  

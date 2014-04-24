@@ -6,7 +6,8 @@
             android:layout_weight="1"
             tools:context="com.example.android.navigationdrawerexample.DrawActivity"
     		tools:ignore="MergeRootFrame" > 
-    <com.example.android.navigationdrawerexample.MyView android:id="@+id/view3d"
+    <com.example.android.navigationdrawerexample.MyView
+        	android:id="@+id/view3d"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"/>                  
     </FrameLayout> 

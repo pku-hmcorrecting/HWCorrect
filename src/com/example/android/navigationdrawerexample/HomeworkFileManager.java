@@ -20,7 +20,11 @@ public class HomeworkFileManager {
 	private int studentId;
 
 	private int pageSum;
-	
+	private MyView myView;
+	public void setMyView(MyView myView_)
+	{
+		myView = myView_;
+	};
 	public HomeworkFileManager(DrawActivity drawActivity, int teacherId, 
 			int courseId, int year, int month, int day, int studentId) throws IOException {
 		this.drawActivity = drawActivity;
@@ -59,7 +63,7 @@ public class HomeworkFileManager {
 	}
 
 	public void getPrevPage() throws IOException {
-    	int prevPageNo = MyView.curPageNo - 1;
+    	int prevPageNo = myView.curPageNo - 1;
     	if (prevPageNo < 1) {
 			AlertDialog.Builder b2 = new AlertDialog.Builder(drawActivity)
 			.setTitle("Message").setMessage("已经是第一页")
@@ -69,23 +73,23 @@ public class HomeworkFileManager {
 			b2.show();
 			return;
     	}
-    	boolean needToSave = MyView.hasCorrect;
+    	boolean needToSave = myView.hasCorrect;
     	if (needToSave)
     		saveCurPage();
-    	MyView.clear();
-    	MyView.curPageNo = prevPageNo;
+    	myView.clear();
+    	myView.curPageNo = prevPageNo;
     	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + prevPageNo + ".jpg");
     	drawActivity.setBackgroundImg(bitmap);
     	drawActivity.setTitle(studentId + "的作业 - " + prevPageNo + "/" + pageSum);
     	if (needToSave) {
     		Toast toast=Toast.makeText(drawActivity.getApplicationContext(), "第"
-        			+ (MyView.curPageNo + 1) + "页已经保存", Toast.LENGTH_SHORT);
+        			+ (myView.curPageNo + 1) + "页已经保存", Toast.LENGTH_SHORT);
     		toast.show();
     	}
     }
     
     public void getNextPage() throws Exception {
-    	int nextPageNo = MyView.curPageNo + 1;
+    	int nextPageNo = myView.curPageNo + 1;
     	if (nextPageNo > pageSum) {
 			AlertDialog.Builder b2 = new AlertDialog.Builder(drawActivity)
 			.setTitle("Message").setMessage("已经是最后一页")
@@ -95,25 +99,25 @@ public class HomeworkFileManager {
 			b2.show();
 			return;
     	}
-    	boolean needToSave = MyView.hasCorrect;
+    	boolean needToSave = myView.hasCorrect;
     	if (needToSave)
     		saveCurPage();
-    	MyView.clear();
-    	MyView.curPageNo = nextPageNo;
+    	myView.clear();
+    	myView.curPageNo = nextPageNo;
     	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + nextPageNo + ".jpg");
     	drawActivity.setBackgroundImg(bitmap);
     	drawActivity.setTitle(studentId + "的作业 - " + nextPageNo + "/" + pageSum);
     	if (needToSave) {
     		Toast toast=Toast.makeText(drawActivity.getApplicationContext(), "第"
-        			+ (MyView.curPageNo - 1) + "页已经保存", Toast.LENGTH_SHORT);
+        			+ (myView.curPageNo - 1) + "页已经保存", Toast.LENGTH_SHORT);
     		toast.show();
     	}
     }
     
     public void saveCurPage() {
-    	Bitmap bitmap = MyView.getCurPageBitmap();
+    	Bitmap bitmap = myView.getCurPageBitmap();
     	try {
- 			FileOutputStream fos = new FileOutputStream(new File(basePath  + "//" + MyView.curPageNo + ".jpg"));
+ 			FileOutputStream fos = new FileOutputStream(new File(basePath  + "//" + myView.curPageNo + ".jpg"));
  			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
  			fos.flush();
  			fos.close();

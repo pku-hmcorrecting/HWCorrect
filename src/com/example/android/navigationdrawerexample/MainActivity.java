@@ -127,18 +127,7 @@ public class MainActivity extends Activity {
                 //sendMessage(arg0);
             	invokeHWListActivity(arg0, arg2+1);
             }  
-        });  
-          
-      //添加长按点击  
-        /*list.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {  
-              
-            @Override  
-            public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {  
-                menu.setHeaderTitle("长按菜单-ContextMenu");     
-                menu.add(0, 0, 0, "弹出长按菜单0");  
-                menu.add(0, 1, 0, "弹出长按菜单1");     
-            }  
-        }); */  
+        });
     }
     
   //长按菜单响应函数  

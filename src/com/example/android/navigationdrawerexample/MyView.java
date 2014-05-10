@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 public class MyView extends ImageView {  
    int curPageNo;
-   
+   boolean DoDragAndZoom = false;
    DrawActivity mainactivity;
    
    /** 游戏画笔 **/  
@@ -85,17 +85,16 @@ public class MyView extends ImageView {
    public void setBackground(Bitmap bm)
    {
 	 
-	  background = bm;
-
-	  bitmap_W = bm.getWidth();
-	  bitmap_H = bm.getHeight();
+	  background = Bitmap.createScaledBitmap(bm, bm.getWidth()-1, bm.getHeight()-1, false);
+	  bitmap_W = background.getWidth();
+	  bitmap_H = background.getHeight();
 
 	  max_W = bitmap_W * 3;
 	  max_H = bitmap_H * 3;
 
 	  min_W = bitmap_W / 3;
 	  min_H = bitmap_H / 3;
-
+	  setFrame(0, 0, (int)bitmap_W, (int)bitmap_H);
 	  mCanvas.setBitmap(background);
 	  setImageBitmap(background);
    }
@@ -251,6 +250,7 @@ public class MyView extends ImageView {
   /**开始进行一个多点触摸事件**/
    private void startZoomAndDrag(MotionEvent event)
    {
+	   if(!DoDragAndZoom) return;
 	   x = (event.getX(0) - event.getX(1));
 	   y = (event.getY(0) - event.getY(1));
 	   preX = (event.getX(0) + event.getX(1)) / 2 + left;
@@ -266,6 +266,7 @@ public class MyView extends ImageView {
 	   right = this.getRight();
 	   top = this.getTop();
 	   bottom = this.getBottom();*/
+	   if(!DoDragAndZoom) return;
 	   if (event.getPointerCount() != 2) return;
 	   x = (event.getX(0) - event.getX(1));
 	   y = (event.getY(0) - event.getY(1));

@@ -268,12 +268,12 @@ public class DrawActivity extends Activity implements OnClickListener {
         			Matrix m = new Matrix();
         			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
         			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-        			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+        			myView.setBackground(bitmap);
         		}
         		else {
         			Matrix m = new Matrix();
            			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-           			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+           			myView.setBackground(bitmap);
         		}
         	} else {
             	Uri uri = data.getData();
@@ -283,12 +283,13 @@ public class DrawActivity extends Activity implements OnClickListener {
             			Matrix m = new Matrix();
             			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-               			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+               			//myView.setBackground1(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+               			myView.setBackground(bitmap);
             		}
             		else {
             			Matrix m = new Matrix();
                			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-               			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+               			myView.setBackground(bitmap);
             		}
             	}
         	}
@@ -302,12 +303,12 @@ public class DrawActivity extends Activity implements OnClickListener {
     			Matrix m = new Matrix();
     			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
     			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-    			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+    			myView.setBackground(bitmap);
     		}
     		else {
     			Matrix m = new Matrix();
        			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
-       			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+       			myView.setBackground(bitmap);
     		}
             myView.saveundolist();
         }
@@ -329,13 +330,13 @@ public class DrawActivity extends Activity implements OnClickListener {
 			Matrix m = new Matrix();
 			m.setRotate(90, (float)bitmap.getWidth()/2, (float)bitmap.getHeight()/2);
   			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getHeight(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getWidth());
-  			myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+  			myView.setBackground(bitmap);
 		}
 		else {
 			Matrix m = new Matrix();
   			m.postScale((float)getWindowManager().getDefaultDisplay().getWidth()/bitmap.getWidth(), (float)getWindowManager().getDefaultDisplay().getHeight()/bitmap.getHeight());
 			if (myView  != null){
-				myView.setBackground(Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true));
+				myView.setBackground(bitmap);
 			}
 			else
 			{

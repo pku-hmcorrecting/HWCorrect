@@ -27,6 +27,7 @@ import android.widget.Toast;
 public class MyView extends ImageView {  
    int curPageNo;
    boolean DoDragAndZoom = false;
+   boolean DoInit = false;
    DrawActivity mainactivity;
    
    /** 游戏画笔 **/  
@@ -85,28 +86,33 @@ public class MyView extends ImageView {
    public void setBackground(Bitmap bm)
    {
 	 
-	  background = Bitmap.createScaledBitmap(bm, bm.getWidth()-1, bm.getHeight()-1, false);
+	  background = Bitmap.createScaledBitmap(bm, bm.getWidth()-1, bm.getHeight()-1, true);
+	  background = Bitmap.createScaledBitmap(background, bm.getWidth(), bm.getHeight(), true);
+	  //避免bm被清扫以后background副本消失造成错误 调整大小之后调整 
 	  bitmap_W = background.getWidth();
 	  bitmap_H = background.getHeight();
-	  left = 0;
-	  top = 0;
-	  right = getWidth();
-	  bottom = getHeight();
-	  max_W = right * 3;
-	  max_H = bottom * 3;
+	  
+		  left = 0;
+		  top = 0;
+		  right = getWidth();
+		  bottom = getHeight();
+		  setFrame(0, 0, (int)right, (int)bottom);
+		  max_W = right * 3;
+		  max_H = bottom * 3;
 
-	  min_W = right / 3;
-	  min_H = bottom / 3;
-	  setFrame(0, 0, (int)right, (int)bottom);
+		  min_W = right / 3;
+		  min_H = bottom / 3;
+	 
+
 	  mCanvas.setBitmap(background);
 	  setImageBitmap(background);
    }
    
-	@Override
+@Override
 	protected void onLayout(boolean changed, int left_, int top_, int right_,
 			int bottom_) {
 		super.onLayout(changed, left_, top_, right_, bottom_);
-		if (top == -1) {
+		if (right == 0) {
 			top = top_;
 			left = left_;
 			bottom = bottom_;
@@ -390,12 +396,7 @@ public class MyView extends ImageView {
 
    
    public void save() {           
-		Bitmap mbitmap = Bitmap.createBitmap(mainactivity.getWindowManager().getDefaultDisplay().getWidth(), mainactivity.getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-        if (background != null) mbitmap = background;
-        else {
-        	Canvas tmpcv = new Canvas(mbitmap);
-        	tmpcv.drawColor(bgcolor);
-        }
+		Bitmap mbitmap = background;
 		
        File dir = new File("/mnt/sdcard/Drawer");
        if (!dir.exists()) {
@@ -419,13 +420,8 @@ public class MyView extends ImageView {
    }
    
    public Bitmap getCurPageBitmap() {
-	   Bitmap mbitmap = Bitmap.createBitmap(mainactivity.getWindowManager().getDefaultDisplay().getWidth(), mainactivity.getWindowManager().getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-       if (background != null) mbitmap = background;
-       else {
-       	Canvas tmpcv = new Canvas(mbitmap);
-       	tmpcv.drawColor(bgcolor);
-       }
-       return mbitmap;
+
+       return background;
 	
    }
 

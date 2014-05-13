@@ -88,13 +88,16 @@ public class MyView extends ImageView {
 	  background = Bitmap.createScaledBitmap(bm, bm.getWidth()-1, bm.getHeight()-1, false);
 	  bitmap_W = background.getWidth();
 	  bitmap_H = background.getHeight();
+	  left = 0;
+	  top = 0;
+	  right = getWidth();
+	  bottom = getHeight();
+	  max_W = right * 3;
+	  max_H = bottom * 3;
 
-	  max_W = bitmap_W * 3;
-	  max_H = bitmap_H * 3;
-
-	  min_W = bitmap_W / 3;
-	  min_H = bitmap_H / 3;
-	  setFrame(0, 0, (int)bitmap_W, (int)bitmap_H);
+	  min_W = right / 3;
+	  min_H = bottom / 3;
+	  setFrame(0, 0, (int)right, (int)bottom);
 	  mCanvas.setBitmap(background);
 	  setImageBitmap(background);
    }

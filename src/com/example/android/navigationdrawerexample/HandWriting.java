@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 abstract class Handwriting
 {
 	protected double speedrate;//速度倍乘参数
-	protected int drawSteps = 130;
+	protected int drawSteps = 200;
 	////根据SAI画线法定义的“画笔直径/圆的间距”
 	public abstract double getWidthFromSpeed(double v);
 	abstract void paintOncanvas(double x1, double y1, double x2, double y2, double x3, double y3, double v1, double v2, Paint paint, Canvas canvas);
@@ -39,7 +39,7 @@ class usualPen extends Handwriting
 		size = Math.exp(-1*v/600);
 		size = size * speedrate + 0.5;
 		if (size > 10) size = 10;
-		size = 0.9;
+		size = 1.3;
 		return size;
 	}
 	public void paintOncanvas(double x1, double y1, double x2, double y2, double x3, double y3, double v1, double v2, Paint paint, Canvas canvas)

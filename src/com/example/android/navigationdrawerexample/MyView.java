@@ -23,6 +23,7 @@ import android.view.SurfaceView;
 import android.view.SurfaceHolder.Callback;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.graphics.Bitmap.Config;
 
 public class MyView extends ImageView {  
    int curPageNo;
@@ -72,7 +73,7 @@ public class MyView extends ImageView {
    private double max_W, min_W, max_H, min_H, bitmap_H, bitmap_W;
    
    /**该View当前上下左右边界**/
-   private double left = -1, right = -1, top = -1, bottom = -1;
+   private double left = 0, right = -1, top = 0, bottom = -1;
    
    
    /**临时变量**/
@@ -86,25 +87,42 @@ public class MyView extends ImageView {
    public void setBackground(Bitmap bm)
    {
 	 
-	  background = Bitmap.createScaledBitmap(bm, bm.getWidth()-1, bm.getHeight()-1, true);
-	  background = Bitmap.createScaledBitmap(background, bm.getWidth(), bm.getHeight(), true);
-	  //避免bm被清扫以后background副本消失造成错误 调整大小之后调整 
+	  //background = Bitmap.createScaledBitmap(bm, bm.getWidth()+1, bm.getHeight()+1, true);
+	  //background = Bitmap.createScaledBitmap(background, bm.getWidth(), bm.getHeight(), true);
+	  background = bm.copy(Bitmap.Config.ARGB_8888, true);
+	  //避免bm被清扫以后background副本消失造成错误 调整大小之后调整回来 
 	  bitmap_W = background.getWidth();
 	  bitmap_H = background.getHeight();
 	  
-		  left = 0;
-		  top = 0;
 		  right = getWidth();
 		  bottom = getHeight();
-		  setFrame(0, 0, (int)right, (int)bottom);
+		  
 		  max_W = right * 3;
 		  max_H = bottom * 3;
 
 		  min_W = right / 3;
 		  min_H = bottom / 3;
+		  right+=left;
+		  bottom += top;
+		  setFrame((int)left, (int)top, (int)right, (int)bottom);
+	  mCanvas.setBitmap(background);
+	  setImageBitmap(background);
+   }
+   
+   private void resetBackground(Bitmap bm)
+   {
+	 
+	  //background = Bitmap.createScaledBitmap(bm, bm.getWidth()+1, bm.getHeight()+1, true);
+	  //background = Bitmap.createScaledBitmap(background, bm.getWidth(), bm.getHeight(), true);
+	  background = bm.copy(Bitmap.Config.ARGB_8888, true);
+	  //避免bm被清扫以后background副本消失造成错误 调整大小之后调整回来 
+	  
+		  setFrame((int)left, (int)top, (int)right, (int)bottom);
+
 	 
 
 	  mCanvas.setBitmap(background);
+	  //mCanvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));
 	  setImageBitmap(background);
    }
    
@@ -154,6 +172,7 @@ public class MyView extends ImageView {
        //mPaint.setStyle(Paint.Style.FILL);  
        mPaint.setStyle(Paint.Style.STROKE);  
        /**设置画笔变为圆滑状**/  
+       mPaint.setFilterBitmap(true);
        mPaint.setStrokeCap(Paint.Cap.ROUND); 
        mPaint.setStrokeJoin(Paint.Join.ROUND); 
        mPaint.setStrokeWidth(1);  
@@ -250,9 +269,36 @@ public class MyView extends ImageView {
    public void finishWriting(MotionEvent event)
    {
 	   mCanvas.save();
+	   double x = translateX(event.getX());  
+       double y = translateY(event.getY());
+       historySize = event.getHistorySize();
+   	   for (int i = 0;i < historySize - 1;i ++)
+   		{
+   			x = translateX(event.getHistoricalX(i));
+   			y = translateY(event.getHistoricalY(i));
+   			curtime = event.getHistoricalEventTime(i);
+   			curv = Math.sqrt((x-prex)*(x-prex) + (y-prey)*(y-prey));
+   			curv = curv / ((double)(curtime - prevtime)/1000);
+   			if (prev == 0) {prev = 0.7 * curv; break;}
+   			curv = prev * 0.3 + curv * 0.7;
+   			//让速度尽量连续变化
+   			mCanvas.save();
+   			myUsualPen.paintOncanvas( preprex, preprey,prex, prey, x, y, preprev, prev, mPaint, mCanvas);
+   			//构造贝塞尔曲线
+   			preprex = prex;
+   			preprey = prey;
+   			preprev = prev;
+   			prex = x;
+   			prey = y;
+   			prev = curv;
+   			mCanvas.restore();
+   			setImageBitmap(background);
+   		}   
 	   myUsualPen.paintOncanvas(preprex, preprey, prex, prey, prex, prey, prev, prev*1.4, mPaint, mCanvas);
 	   mCanvas.restore();
-	   setImageBitmap(background);
+	   //setImageBitmap(background);
+	   resetBackground(background);
+	   //postInvalidate();
    }
    
    

@@ -45,7 +45,7 @@ public class HomeworkFileManager {
 		File f = new File(basePath);
 		if (f.exists()) {
 			pageSum = f.listFiles().length;
-			Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//1.jpg");
+			Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//1.png");
 			drawActivity.setBackgroundImg(bitmap);
 			drawActivity.setTitle(studentId + "的作业 - 1/" + pageSum);
 		}
@@ -78,7 +78,7 @@ public class HomeworkFileManager {
     		saveCurPage();
     	myView.clear();
     	myView.curPageNo = prevPageNo;
-    	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + prevPageNo + ".jpg");
+    	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + prevPageNo + ".png");
     	drawActivity.setBackgroundImg(bitmap);
     	drawActivity.setTitle(studentId + "的作业 - " + prevPageNo + "/" + pageSum);
     	if (needToSave) {
@@ -104,7 +104,7 @@ public class HomeworkFileManager {
     		saveCurPage();
     	myView.clear();
     	myView.curPageNo = nextPageNo;
-    	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + nextPageNo + ".jpg");
+    	Bitmap bitmap = BitmapFactory.decodeFile(basePath  + "//" + nextPageNo + ".png");
     	drawActivity.setBackgroundImg(bitmap);
     	drawActivity.setTitle(studentId + "的作业 - " + nextPageNo + "/" + pageSum);
     	if (needToSave) {
@@ -117,7 +117,7 @@ public class HomeworkFileManager {
     public void saveCurPage() {
     	Bitmap bitmap = myView.getCurPageBitmap();
     	try {
- 			FileOutputStream fos = new FileOutputStream(new File(basePath  + "//" + myView.curPageNo + ".jpg"));
+ 			FileOutputStream fos = new FileOutputStream(new File(basePath  + "//" + myView.curPageNo + ".png"));
  			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
  			fos.flush();
  			fos.close();

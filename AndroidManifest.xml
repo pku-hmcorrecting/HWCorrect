@@ -16,7 +16,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.navigationdrawerexample"
+    package="edu.pku.sei.hwcorrector"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -25,13 +25,14 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         <activity
-            android:name="com.example.android.navigationdrawerexample.MainActivity"
+            android:name="edu.pku.sei.hwcorrector.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,58 +41,58 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.DisplayHomeworksActivity"
+            android:name="edu.pku.sei.hwcorrector.DisplayHomeworksActivity"
             android:label="@string/title_activity_display_homeworks"
-            android:parentActivityName="com.example.android.navigationdrawerexample.MainActivity" >
+            android:parentActivityName="edu.pku.sei.hwcorrector.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.MainActivity" />
+                android:value="edu.pku.sei.hwcorrector.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.DrawActivity"
+            android:name="edu.pku.sei.hwcorrector.DrawActivity"
             android:label="@string/title_activity_draw"
-            android:parentActivityName="com.example.android.navigationdrawerexample.HWListActivity" >
+            android:parentActivityName="edu.pku.sei.hwcorrector.HWListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.HWListActivity" />
+                android:value="edu.pku.sei.hwcorrector.HWListActivity" />
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.DrawFullScreen"
+            android:name="edu.pku.sei.hwcorrector.DrawFullScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_draw_full_screen"
-            android:parentActivityName="com.example.android.navigationdrawerexample.DisplayHomeworksActivity"
+            android:parentActivityName="edu.pku.sei.hwcorrector.DisplayHomeworksActivity"
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" />
+                android:value="edu.pku.sei.hwcorrector.DisplayHomeworksActivity" />
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.Draw2"
+            android:name="edu.pku.sei.hwcorrector.Draw2"
             android:label="@string/title_activity_draw2" >
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.Draw3"
+            android:name="edu.pku.sei.hwcorrector.Draw3"
             android:label="@string/title_activity_draw3"
-            android:parentActivityName="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" >
+            android:parentActivityName="edu.pku.sei.hwcorrector.DisplayHomeworksActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.DisplayHomeworksActivity" />
+                android:value="edu.pku.sei.hwcorrector.DisplayHomeworksActivity" />
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.HomeWorkListActivity"
+            android:name="edu.pku.sei.hwcorrector.HomeWorkListActivity"
             android:label="@string/title_activity_home_work_list"
-            android:parentActivityName="com.example.android.navigationdrawerexample.MainActivity" >
+            android:parentActivityName="edu.pku.sei.hwcorrector.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.MainActivity" />
+                android:value="edu.pku.sei.hwcorrector.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.android.navigationdrawerexample.HWListActivity"
+            android:name="edu.pku.sei.hwcorrector.HWListActivity"
             android:label="@string/title_activity_hwlist"
-            android:parentActivityName="com.example.android.navigationdrawerexample.MainActivity" >
+            android:parentActivityName="edu.pku.sei.hwcorrector.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.navigationdrawerexample.MainActivity" />
+                android:value="edu.pku.sei.hwcorrector.MainActivity" />
         </activity>
     </application>
 

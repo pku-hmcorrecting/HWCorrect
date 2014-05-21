@@ -17,7 +17,7 @@
 
 <resources>
 
-    <string name="app_name">Navigation Drawer Example</string>
+    <string name="app_name">HWCorrector</string>
 
     <string-array name="menu_item_array">
         <item>HomeWorks</item>

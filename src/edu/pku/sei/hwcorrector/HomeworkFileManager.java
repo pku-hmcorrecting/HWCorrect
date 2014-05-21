@@ -13,9 +13,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 
-import android.R.string;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,10 +74,8 @@ public class HomeworkFileManager {
     	boolean needToSave = myView.hasCorrect;
     	if (needToSave)
     		saveCurPage();
-    	myView.clear();
     	myView.curPageNo = prevPageNo;
     	new GetCurHWFileTask().execute(null, null);
-    	drawActivity.setTitle(studentId + "的作业 - " + prevPageNo + "/" + pageSum);
     }
     
     public void getNextPage() throws Exception {
@@ -92,10 +92,8 @@ public class HomeworkFileManager {
     	boolean needToSave = myView.hasCorrect;
     	if (needToSave)
     		saveCurPage();
-    	myView.clear();
     	myView.curPageNo = nextPageNo;
     	new GetCurHWFileTask().execute(null, null);
-    	drawActivity.setTitle(studentId + "的作业 - " + nextPageNo + "/" + pageSum);
     }
     
     public void saveCurPage() {
@@ -146,6 +144,8 @@ public class HomeworkFileManager {
 			if (state == "OK") {
 				drawActivity.setBackgroundImg(pageBitmap);
 				drawActivity.setOriginalBackground();
+				myView.clear();
+				drawActivity.setTitle(studentId + "的作业 - " + myView.curPageNo + "/" + pageSum);
 			}
 			else {
 				AlertDialog.Builder b2 = new AlertDialog.Builder(drawActivity)
@@ -179,11 +179,18 @@ public class HomeworkFileManager {
 	        // sending a Image;  
 	        // note here, that you can send more than one image, just add another param, same rule to the String;  
 	  
-	        entity.addPart("file", new ByteArrayBody(data, tmpPage + ".png"));  
 	        
-	        httppost.setEntity(entity);  
-	        HttpResponse response;
-			try {
+	        try {
+	        	entity.addPart("file", new ByteArrayBody(data, tmpPage + ".png"));
+		        entity.addPart("tid", new StringBody(teacherId));
+		        entity.addPart("cid", new StringBody(courseId));
+		        entity.addPart("year", new StringBody(year));
+		        entity.addPart("month", new StringBody(month));
+		        entity.addPart("day", new StringBody(day));
+		        entity.addPart("sid", new StringBody(studentId));
+		        httppost.setEntity(entity);
+		        HttpResponse response;
+			
 				response = httpclient.execute(httppost);
 				if (response.getStatusLine().getStatusCode() == 200) {
 		        	return "OK";

@@ -27,6 +27,15 @@ import android.widget.SimpleAdapter;
 
 public class HWListActivity extends Activity {
 	private String stuList;
+	private String []temp = null;
+	private String teacherId = "1";
+	private String courseId = "1";
+	private String year = "2014";
+	private String month = "05";
+	private String day = "14";
+	private String studentId = "1100012844";
+	private String pageNum = "0";
+	private MyView myView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -71,7 +80,8 @@ public class HWListActivity extends Activity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,  
                     long arg3) {  
             	////
-            	invokeDrawActivity();
+            	//System.out.println(arg2);
+            	invokeDrawActivity(arg2);
             }  
         });   
     }
@@ -79,7 +89,7 @@ public class HWListActivity extends Activity {
 	public void setUpList(){
 		
 		int listNum = 0;
-		String []temp = null;
+		
 		if ("null".equals(stuList)) {
 			listNum = 0;
 		}
@@ -95,7 +105,7 @@ public class HWListActivity extends Activity {
           
         //生成动态数组，加入数据  
         ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();  
-        for(int i=0;i<listNum;i++)  
+        for(int i=0;i<listNum;i+=2)  
         {  
             HashMap<String, Object> map = new HashMap<String, Object>(); 
             map.put("CertainHWsItemTitle", temp[i]);
@@ -120,13 +130,24 @@ public class HWListActivity extends Activity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,  
                     long arg3) {  
             	////
-            	invokeDrawActivity();
+            	invokeDrawActivity(arg2);
             }  
         });   
     }
 	
-	void invokeDrawActivity(){
+	void invokeDrawActivity(int listitem){
+		if (temp.length > listitem * 2) {
+			studentId = temp[listitem * 2];
+			pageNum = temp[listitem * 2 + 1];
+		}
 		Intent intent = new Intent(this, DrawActivity.class);
+		intent.putExtra("teacherId", teacherId);
+		intent.putExtra("courseId", courseId);
+		intent.putExtra("year", year);
+		intent.putExtra("month", month);
+		intent.putExtra("day", day);
+		intent.putExtra("studentId", studentId);
+		intent.putExtra("pageNum", pageNum);
 		startActivityForResult(intent, RESULT_OK);
 		//startActivity(intent);
 	}
@@ -178,7 +199,7 @@ public class HWListActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... arg0) {
 			try {
-				String urlString = "http://115.27.19.253:8888/HWServer/GetHWNumber?tid=1&cid=1&year=2014&month=5&day=14";
+				String urlString = MainActivity.BASEURL_STRING + "GetHWNumber?tid=1&cid=1&year=2014&month=05&day=14";
 				System.out.println(urlString);
 				URL url = new URL(urlString);
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();

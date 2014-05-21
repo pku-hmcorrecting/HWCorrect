@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -145,14 +146,13 @@ public class MyView extends ImageView {
    }
    
    /**构造函数**/
-   public MyView(Context context, AttributeSet attrs) {  
+   public MyView(Context context, AttributeSet attrs) {
        super(context, attrs);  
        /** 设置当前View拥有控制焦点 **/
        this.setKeepScreenOn(true);
        this.setFocusable(true);  
        /** 设置当前View拥有触摸事件 **/  
        this.setFocusableInTouchMode(true);  
- 
        /** 创建画布 **/
        mCanvas = new Canvas();
        /** 创建曲线画笔 **/
@@ -169,8 +169,6 @@ public class MyView extends ImageView {
        mPaint.setStrokeJoin(Paint.Join.ROUND); 
        mPaint.setStrokeWidth(1);  
        mPaint.setColor(Color.RED);
-       
-       
    } 
 
 
@@ -215,7 +213,7 @@ public class MyView extends ImageView {
    /**开始书写**/
    public void startWriting(MotionEvent event)
    {
-	   /**设置曲线轨迹起点 X Y坐标**/ 
+	   /**设置曲线轨迹起点 X Y坐标**/
 	   double x = translateX(event.getX());  
        double y = translateY(event.getY());
        saveundolist();
@@ -380,8 +378,7 @@ public class MyView extends ImageView {
 	   redobitmap.add(background);
 	   Bitmap tmp = undobitmap.get(undobitmap.size()-1);
 	   undobitmap.remove(undobitmap.size()-1);
-	   background = tmp;
-	   setImageBitmap(background);
+	   setBackground(tmp);
    }
    
    public void redo() {
@@ -389,8 +386,7 @@ public class MyView extends ImageView {
 	   undobitmap.add(background);
 	   Bitmap tmp = redobitmap.get(redobitmap.size()-1);
 	   redobitmap.remove(redobitmap.size()-1);
-	   background = tmp;
-	   setImageBitmap(background);
+	   setBackground(tmp);
    }
    
    public void clear() {
@@ -400,7 +396,8 @@ public class MyView extends ImageView {
    }
    
    public void saveundolist() {
-	   undobitmap.add(background);
+	   Bitmap bm = background.copy(Config.ARGB_8888, true);
+	   undobitmap.add(bm);
 	   if (undobitmap.size() > 12) undobitmap.remove(0);
        redobitmap.clear();
    }

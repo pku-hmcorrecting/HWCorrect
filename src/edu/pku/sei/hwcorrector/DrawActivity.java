@@ -23,12 +23,13 @@ public class DrawActivity extends Activity implements OnClickListener {
     
     Button option = null;
     HomeworkFileManager hwFileManager;
-    private int teacherId;
-	private int courseId;
-	private int year;
-	private int month;
-	private int day;
-	private int studentId;
+    private String teacherId;
+	private String courseId;
+	private String year;
+	private String month;
+	private String day;
+	private String studentId;
+	private String pageNum;
 	private MyView myView;
  
     @Override  
@@ -42,13 +43,20 @@ public class DrawActivity extends Activity implements OnClickListener {
         myView.mainactivity = this;
         myView.curPageNo = 1;
         Intent intent = this.getIntent();
-	    teacherId = intent.getIntExtra("teacherId", 1);
+	    teacherId = intent.getStringExtra("teacherId");
+	    courseId = intent.getStringExtra("courseId");
+	    year = intent.getStringExtra("year");
+	    month = intent.getStringExtra("month");
+	    day = intent.getStringExtra("day");
+	    studentId = intent.getStringExtra("studentId");
+	    pageNum = intent.getStringExtra("pageNum");
+	    /*
 	    courseId = intent.getIntExtra("courseId", 1);
 	    year = intent.getIntExtra("year", 2014);
 	    month = intent.getIntExtra("month", 5);
 	    day = intent.getIntExtra("day", 14);
-	    studentId = intent.getIntExtra("studentId", 1100012844);
-		hwFileManager = new HomeworkFileManager(this, teacherId, courseId, year, month, day, studentId);
+	    studentId = intent.getIntExtra("studentId", 1100012844);*/
+		hwFileManager = new HomeworkFileManager(this, teacherId, courseId, year, month, day, studentId, pageNum);
 		hwFileManager.setMyView(myView);
         //option = (Button)findViewById(R.id.button);
         //option.setOnClickListener(this);

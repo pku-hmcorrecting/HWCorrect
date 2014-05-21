@@ -15,6 +15,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.R.string;
 import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,13 +24,13 @@ import android.widget.Toast;
 
 public class HomeworkFileManager {
 	DrawActivity drawActivity;
-	
-    private int teacherId;
-	private int courseId;
-	private int year;
-	private int month;
-	private int day;
-	private int studentId;
+
+    private String teacherId;
+	private String courseId;
+	private String year;
+	private String month;
+	private String day;
+	private String studentId;
 	
 	private int prevPageNo;
 	private int nextPageNo;
@@ -44,8 +45,8 @@ public class HomeworkFileManager {
 		myView = myView_;
 	};
 	
-	public HomeworkFileManager(DrawActivity drawActivity, int teacherId, 
-			int courseId, int year, int month, int day, int studentId) {
+	public HomeworkFileManager(DrawActivity drawActivity, String teacherId, 
+			String courseId, String year, String month, String day, String studentId, String pageNum) {
 		this.drawActivity = drawActivity;
 		this.teacherId = teacherId;
 		this.courseId = courseId;
@@ -53,7 +54,7 @@ public class HomeworkFileManager {
 		this.month = month;
 		this.day = day;
 		this.studentId = studentId;
-		pageSum = 7;
+		pageSum = Integer.parseInt(pageNum);
 		new GetCurHWFileTask().execute(null, null);
 	}
 
@@ -123,7 +124,7 @@ public class HomeworkFileManager {
 		@Override
 		protected String doInBackground(Void... arg0) {
 			try {
-				String urlString = "http://115.27.19.253:8888/HWServer/GetHWFile?tid=" + teacherId + "&cid=" +
+				String urlString = MainActivity.BASEURL_STRING + "GetHWFile?tid=" + teacherId + "&cid=" +
 						courseId + "&year=" + year + "&month=" + month + "&day=" + day + 
 						"&sid=" + studentId + "&page=" + myView.curPageNo;
 				System.out.println(urlString);
@@ -163,24 +164,22 @@ public class HomeworkFileManager {
 		@Override
 		protected String doInBackground(Void... arg0) {
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://115.27.19.253:8888/HWServer/CorrectedHWUpload");
+			HttpPost httppost = new HttpPost(MainActivity.BASEURL_STRING + "CorrectedHWUpload");
 			MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
 
 	        ByteArrayOutputStream bos = new ByteArrayOutputStream();  
 	  
 	        
 	        tmpBitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-	        byte[] data = bos.toByteArray();
-	  
+	        byte[] data = bos.toByteArray(); 
 	        // sending a String param;  
-	  
 	        //entity.addPart("myParam", new StringBody("my value"));  
 	  
 	        // sending a Image;  
 	        // note here, that you can send more than one image, just add another param, same rule to the String;  
 	  
 	        entity.addPart("file", new ByteArrayBody(data, tmpPage + ".png"));  
-	  
+	        
 	        httppost.setEntity(entity);  
 	        HttpResponse response;
 			try {

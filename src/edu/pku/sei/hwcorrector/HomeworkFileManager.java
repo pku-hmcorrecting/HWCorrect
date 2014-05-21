@@ -145,6 +145,7 @@ public class HomeworkFileManager {
 		protected void onPostExecute(String state) {
 			if (state == "OK") {
 				drawActivity.setBackgroundImg(pageBitmap);
+				drawActivity.setOriginalBackground();
 			}
 			else {
 				AlertDialog.Builder b2 = new AlertDialog.Builder(drawActivity)

@@ -45,6 +45,7 @@ public class MyView extends ImageView {
    public Canvas mCanvas = null;
    
    public Bitmap background = null;
+   public Bitmap originalbg = null;
 
  
      
@@ -392,7 +393,7 @@ public class MyView extends ImageView {
    public void clear() {
 	   saveundolist();
 	   hasCorrect = false;
-   	   background = null;
+   	   setBackground(originalbg);
    }
    
    public void saveundolist() {

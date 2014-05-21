@@ -155,13 +155,6 @@ public class DrawActivity extends Activity implements OnClickListener {
         if(item.getItemId()==4)  
         {  
         	myView.clear();
-        	myView.curPageNo--;
-        	try {
-				hwFileManager.getNextPage();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
         }            
         if(item.getItemId()==6)  
         {  
@@ -343,6 +336,10 @@ public class DrawActivity extends Activity implements OnClickListener {
 				int b = 2;
 			}
 		}
+   }
+   
+   public void setOriginalBackground() {
+	   myView.originalbg = Bitmap.createBitmap(myView.background);
    }
     
 } 

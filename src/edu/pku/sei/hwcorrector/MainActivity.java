@@ -69,7 +69,7 @@ import android.widget.SimpleAdapter;
  */
 public class MainActivity extends Activity {
 	public final static String LIST_NUMBER_MESSAGE = "com.wym.HWCorrect.list_number";
-	public final static String BASEURL_STRING = "http://162.105.51.140:8888/HWServer/";
+	public final static String BASEURL_STRING = "http://115.27.16.210:8888/HWServer/";
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;

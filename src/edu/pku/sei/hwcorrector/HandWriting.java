@@ -21,6 +21,7 @@ class usualPen extends Handwriting
 	private double t,tt,ttt,u,uu,uuu,x,y;
 	private Point control1 = new Point(), control2 = new Point();
 	private double size;
+	private double beta;
 	RectF oval = new RectF();
 	public usualPen()
 	{
@@ -31,12 +32,13 @@ class usualPen extends Handwriting
 		control1.x = x;
 		control1.y = y;
 	}
+	public void setSize(double s)
+	{
+		beta = s;
+	}
 	public double getWidthFromSpeed(double v)
 	{
-		size = Math.exp(-1*v/600);
-		size = size * speedrate + 0.5;
-		if (size > 10) size = 10;
-		size = 1.3;
+		size = 400*Math.sqrt(beta)/(Math.sqrt(v) + 400) + beta;
 		return size;
 	}
 	public void paintOncanvas(double x1, double y1, double x2, double y2, double x3, double y3, double v1, double v2, Paint paint, Canvas canvas)

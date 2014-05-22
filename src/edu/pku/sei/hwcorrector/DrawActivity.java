@@ -182,10 +182,10 @@ public class DrawActivity extends Activity implements OnClickListener {
         if(item.getItemId()>=24&&item.getItemId()<=28)
         {
         	if(item.getItemId()==24)myView.changesize(1);
-        	else if(item.getItemId()==25)myView.changesize(3);
-        	else if(item.getItemId()==26)myView.changesize(5);
-        	else if(item.getItemId()==27)myView.changesize(9);
-        	else if(item.getItemId()==28)myView.changesize(15);
+        	else if(item.getItemId()==25)myView.changesize(1.2);
+        	else if(item.getItemId()==26)myView.changesize(1.4);
+        	else if(item.getItemId()==27)myView.changesize(1.6);
+        	else if(item.getItemId()==28)myView.changesize(1.8);
         }
         if(item.getItemId()>=34 && item.getItemId()<=41)  
         {  

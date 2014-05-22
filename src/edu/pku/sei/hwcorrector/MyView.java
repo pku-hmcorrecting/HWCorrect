@@ -37,7 +37,7 @@ public class MyView extends ImageView {
    boolean hasCorrect = false;
    
    int color = 2;
-   int size = 5;
+   double size = 1.4;
    int bgcolor = Color.WHITE;
  
    
@@ -225,6 +225,7 @@ public class MyView extends ImageView {
    	   prev = 0;
    	   preprev = 0;
    	   myUsualPen.setStart((int)x, (int)y);
+   	   myUsualPen.setSize(size);
    }
    /**继续未完成的书写**/
    public void continueWriting(MotionEvent event)
@@ -239,8 +240,9 @@ public class MyView extends ImageView {
    			curtime = event.getHistoricalEventTime(i);
    			curv = Math.sqrt((x-prex)*(x-prex) + (y-prey)*(y-prey));
    			curv = curv / ((double)(curtime - prevtime)/1000);
-   			if (prev == 0) {prev = 0.7 * curv; break;}
+   			//if (prev == 0) {prev = 0.7 * curv; break;}
    			curv = prev * 0.3 + curv * 0.7;
+   			if (prev == 0&&preprev == 0) {prev = preprev = curv; break;}
    			//让速度尽量连续变化
    			mCanvas.save();
    			myUsualPen.paintOncanvas( preprex, preprey,prex, prey, x, y, preprev, prev, mPaint, mCanvas);
@@ -411,7 +413,7 @@ public class MyView extends ImageView {
    	//mTextPaint.setColor(mPaint[color].getColor());
    }
    
-   public void changesize(int newsize) {
+   public void changesize(double newsize) {
 	   size = newsize;
    }
    
